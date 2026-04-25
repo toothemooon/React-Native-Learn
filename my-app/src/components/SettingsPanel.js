@@ -6,10 +6,11 @@ import {
   ScrollView,
   Pressable,
   TextInput,
-  Switch,
   Modal,
   SafeAreaView,
 } from 'react-native';
+
+const COUNTDOWN_OPTIONS = ['1 min', '3 min', '5 min', '10 min', '15 min', '30 min'];
 
 const SOUNDS = [
   { id: '00', locked: false },
@@ -29,7 +30,9 @@ const SOUNDS = [
 
 export default function SettingsPanel({ visible, onClose }) {
   const [selectedSound, setSelectedSound] = useState('00');
-  const [binarySwitch, setBinarySwitch] = useState(false);
+  const [playMode, setPlayMode] = useState('auto');
+  const [stopMode, setStopMode] = useState('never');
+  const [selectedCountdown, setSelectedCountdown] = useState('5 min');
 
   return (
     <Modal visible={visible} transparent={false} animationType="slide">
@@ -58,6 +61,68 @@ export default function SettingsPanel({ visible, onClose }) {
             showsVerticalScrollIndicator={true}
             indicatorStyle="white"
           >
+            {/* 播放模式 */}
+            <View style={styles.segmentBlock}>
+              <Text style={styles.sectionLabel}>播放模式</Text>
+              <View style={styles.segmentContainer}>
+                {[{ key: 'auto', label: '自动' }, { key: 'manual', label: '手敲' }].map((item) => (
+                  <Pressable
+                    key={item.key}
+                    style={[styles.segmentBtn, playMode === item.key && styles.segmentBtnActive]}
+                    onPress={() => setPlayMode(item.key)}
+                  >
+                    <Text style={[styles.segmentText, playMode === item.key && styles.segmentTextActive]}>
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+
+            {/* 停止模式 */}
+            <View style={styles.segmentBlock}>
+              <Text style={styles.sectionLabel}>停止模式</Text>
+              <View style={styles.segmentContainer}>
+                {[
+                  { key: 'never', label: '永不' },
+                  { key: 'date', label: '日期' },
+                  { key: 'count', label: '计数' },
+                  { key: 'countdown', label: '倒计时' },
+                ].map((item) => (
+                  <Pressable
+                    key={item.key}
+                    style={[styles.segmentBtn, stopMode === item.key && styles.segmentBtnActive]}
+                    onPress={() => setStopMode(item.key)}
+                  >
+                    <Text style={[styles.segmentText, stopMode === item.key && styles.segmentTextActive]}>
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+
+              {/* 倒计时时长选项 */}
+              {stopMode === 'countdown' && (
+                <View style={styles.countdownRow}>
+                  {COUNTDOWN_OPTIONS.map((opt, index) => (
+                    <React.Fragment key={opt}>
+                      <Pressable onPress={() => setSelectedCountdown(opt)}>
+                        <Text style={[
+                          styles.countdownOption,
+                          selectedCountdown === opt && styles.countdownOptionActive,
+                        ]}>
+                          {opt}
+                        </Text>
+                      </Pressable>
+                      {index < COUNTDOWN_OPTIONS.length - 1 && (
+                        <Text style={styles.countdownDivider}>|</Text>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </View>
+              )}
+            </View>
+
             {/* 敲击间隔滑块 */}
             <View style={styles.sliderBlock}>
               <Text style={styles.sliderLabel}>敲击间隔 (0.5)s</Text>
@@ -109,10 +174,6 @@ export default function SettingsPanel({ visible, onClose }) {
 
             {/* 联系 & 链接区 */}
             <View style={styles.linksSection}>
-              <Text style={styles.contactText}>
-                {'联系作者:\nninerwong@outlook.com'}
-              </Text>
-
               <Pressable style={styles.menuRow}>
                 <Text style={styles.menuText}>发表评论</Text>
               </Pressable>
@@ -125,31 +186,14 @@ export default function SettingsPanel({ visible, onClose }) {
                 <Text style={styles.menuText}>购买</Text>
               </Pressable>
 
-              <Pressable style={[styles.menuRow, styles.highlightRow]}>
-                <Text style={styles.menuText}>作者的其他app</Text>
-              </Pressable>
-
               <Pressable style={styles.menuRow}>
                 <Text style={styles.menuText}>历史记录</Text>
               </Pressable>
-
-              {/* 二进制代码开关 */}
-              <View style={styles.toggleRow}>
-                <Text style={styles.toggleLabel}>
-                  在悬浮文字后面显示绿色二进制代码
-                </Text>
-                <Switch
-                  value={binarySwitch}
-                  onValueChange={setBinarySwitch}
-                  trackColor={{ false: '#3A3A3C', true: '#4CD964' }}
-                  thumbColor="#FFFFFF"
-                />
-              </View>
             </View>
 
             {/* 版权页脚 */}
-            <Text style={styles.footer}>粤ICP备2024208142号-2A</Text>
-            <View style={{ height: 30 }} />
+            {/* <Text style={styles.footer}>粤ICP备2024208142号-2A</Text>
+            <View style={{ height: 30 }} /> */}
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -295,13 +339,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 28,
   },
-  contactText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 4,
-  },
   menuRow: {
     paddingVertical: 16,
     alignItems: 'center',
@@ -312,24 +349,54 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15,
   },
-  highlightRow: {
-    backgroundColor: '#7B4F2E',
+  segmentBlock: {
+    paddingHorizontal: 20,
+    paddingTop: 24,
   },
-  toggleRow: {
+  segmentContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#2C2C2E',
+    borderRadius: 10,
+    padding: 3,
+  },
+  segmentBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  segmentBtnActive: {
+    backgroundColor: '#636366',
+  },
+  segmentText: {
+    color: '#8E8E93',
+    fontSize: 14,
+  },
+  segmentTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '500',
+  },
+  countdownRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#333',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#333',
+    marginTop: 14,
+    backgroundColor: '#2C2C2E',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
   },
-  toggleLabel: {
+  countdownOption: {
+    color: '#8E8E93',
+    fontSize: 13,
+    paddingHorizontal: 6,
+  },
+  countdownOptionActive: {
     color: '#FFFFFF',
-    fontSize: 14,
-    flex: 1,
-    marginRight: 12,
+    fontWeight: '600',
+  },
+  countdownDivider: {
+    color: '#444',
+    fontSize: 13,
   },
   footer: {
     color: '#555',
