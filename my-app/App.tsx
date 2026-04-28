@@ -20,7 +20,7 @@ export default function App() {
           <Pressable onPress={() => console.log('切换模式')} style={styles.iconButton}>
             <Ionicons name="infinite" size={32} color="#FFFFFF" />
           </Pressable>
-          
+
           {/* 为了居中对齐，右侧放一个空的等宽占位 view */}
           <View style={{ width: 44, height: 44 }} />
         </View>

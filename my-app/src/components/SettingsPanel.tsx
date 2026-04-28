@@ -10,10 +10,16 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-const COUNTDOWN_OPTIONS = ['1 min', '3 min', '5 min', '10 min', '15 min', '30 min'];
-const COUNT_OPTIONS = ['10', '50', '100', '200', '500', '1000'];
+const COUNTDOWN_OPTIONS: string[] = ['1 min', '3 min', '5 min', '10 min', '15 min', '30 min'];
+const COUNT_OPTIONS: string[] = ['10', '50', '100', '200', '500', '1000'];
 
-const SOUNDS = [
+type SoundItem = {
+  id: string;
+  locked: boolean;
+  bold?: boolean;
+};
+
+const SOUNDS: SoundItem[] = [
   { id: '00', locked: false },
   { id: '01', locked: false },
   { id: '02', locked: false },
@@ -29,12 +35,20 @@ const SOUNDS = [
   { id: '12', locked: true, bold: true },
 ];
 
-export default function SettingsPanel({ visible, onClose }) {
-  const [selectedSound, setSelectedSound] = useState('00');
-  const [playMode, setPlayMode] = useState('auto');
-  const [stopMode, setStopMode] = useState('never');
-  const [selectedCountdown, setSelectedCountdown] = useState('5 min');
-  const [selectedCount, setSelectedCount] = useState('100');
+type PlayMode = 'auto' | 'manual';
+type StopMode = 'never' | 'count' | 'countdown';
+
+interface Props {
+  visible: boolean;
+  onClose: () => void;
+}
+
+export default function SettingsPanel({ visible, onClose }: Props) {
+  const [selectedSound, setSelectedSound] = useState<string>('00');
+  const [playMode, setPlayMode] = useState<PlayMode>('auto');
+  const [stopMode, setStopMode] = useState<StopMode>('never');
+  const [selectedCountdown, setSelectedCountdown] = useState<string>('5 min');
+  const [selectedCount, setSelectedCount] = useState<string>('100');
 
   return (
     <Modal visible={visible} transparent={false} animationType="slide">
@@ -67,7 +81,7 @@ export default function SettingsPanel({ visible, onClose }) {
             <View style={styles.segmentBlock}>
               <Text style={styles.sectionLabel}>播放模式</Text>
               <View style={styles.segmentContainer}>
-                {[{ key: 'auto', label: '自动' }, { key: 'manual', label: '手敲' }].map((item) => (
+                {([{ key: 'auto', label: '自动' }, { key: 'manual', label: '手敲' }] as { key: PlayMode; label: string }[]).map((item) => (
                   <Pressable
                     key={item.key}
                     style={[styles.segmentBtn, playMode === item.key && styles.segmentBtnActive]}
@@ -83,79 +97,79 @@ export default function SettingsPanel({ visible, onClose }) {
 
             {/* 停止模式 */}
             {playMode === 'auto' && (
-            <View style={styles.segmentBlock}>
-              <Text style={styles.sectionLabel}>停止模式</Text>
-              <View style={styles.segmentContainer}>
-                {[
-                  { key: 'never', label: '永不' },
-                  { key: 'count', label: '计数' },
-                  { key: 'countdown', label: '倒计时' },
-                ].map((item) => (
-                  <Pressable
-                    key={item.key}
-                    style={[styles.segmentBtn, stopMode === item.key && styles.segmentBtnActive]}
-                    onPress={() => setStopMode(item.key)}
-                  >
-                    <Text style={[styles.segmentText, stopMode === item.key && styles.segmentTextActive]}>
-                      {item.label}
-                    </Text>
-                  </Pressable>
-                ))}
+              <View style={styles.segmentBlock}>
+                <Text style={styles.sectionLabel}>停止模式</Text>
+                <View style={styles.segmentContainer}>
+                  {([
+                    { key: 'never', label: '永不' },
+                    { key: 'count', label: '计数' },
+                    { key: 'countdown', label: '倒计时' },
+                  ] as { key: StopMode; label: string }[]).map((item) => (
+                    <Pressable
+                      key={item.key}
+                      style={[styles.segmentBtn, stopMode === item.key && styles.segmentBtnActive]}
+                      onPress={() => setStopMode(item.key)}
+                    >
+                      <Text style={[styles.segmentText, stopMode === item.key && styles.segmentTextActive]}>
+                        {item.label}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+
+                {/* 计数预选项 */}
+                {stopMode === 'count' && (
+                  <View style={styles.countdownRow}>
+                    {COUNT_OPTIONS.map((opt, index) => (
+                      <React.Fragment key={opt}>
+                        <Pressable onPress={() => setSelectedCount(opt)}>
+                          <Text style={[
+                            styles.countdownOption,
+                            selectedCount === opt && styles.countdownOptionActive,
+                          ]}>
+                            {opt}
+                          </Text>
+                        </Pressable>
+                        {index < COUNT_OPTIONS.length - 1 && (
+                          <Text style={styles.countdownDivider}>|</Text>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </View>
+                )}
+
+                {/* 倒计时时长选项 */}
+                {stopMode === 'countdown' && (
+                  <View style={styles.countdownRow}>
+                    {COUNTDOWN_OPTIONS.map((opt, index) => (
+                      <React.Fragment key={opt}>
+                        <Pressable onPress={() => setSelectedCountdown(opt)}>
+                          <Text style={[
+                            styles.countdownOption,
+                            selectedCountdown === opt && styles.countdownOptionActive,
+                          ]}>
+                            {opt}
+                          </Text>
+                        </Pressable>
+                        {index < COUNTDOWN_OPTIONS.length - 1 && (
+                          <Text style={styles.countdownDivider}>|</Text>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </View>
+                )}
               </View>
-
-              {/* 计数预选项 */}
-              {stopMode === 'count' && (
-                <View style={styles.countdownRow}>
-                  {COUNT_OPTIONS.map((opt, index) => (
-                    <React.Fragment key={opt}>
-                      <Pressable onPress={() => setSelectedCount(opt)}>
-                        <Text style={[
-                          styles.countdownOption,
-                          selectedCount === opt && styles.countdownOptionActive,
-                        ]}>
-                          {opt}
-                        </Text>
-                      </Pressable>
-                      {index < COUNT_OPTIONS.length - 1 && (
-                        <Text style={styles.countdownDivider}>|</Text>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </View>
-              )}
-
-              {/* 倒计时时长选项 */}
-              {stopMode === 'countdown' && (
-                <View style={styles.countdownRow}>
-                  {COUNTDOWN_OPTIONS.map((opt, index) => (
-                    <React.Fragment key={opt}>
-                      <Pressable onPress={() => setSelectedCountdown(opt)}>
-                        <Text style={[
-                          styles.countdownOption,
-                          selectedCountdown === opt && styles.countdownOptionActive,
-                        ]}>
-                          {opt}
-                        </Text>
-                      </Pressable>
-                      {index < COUNTDOWN_OPTIONS.length - 1 && (
-                        <Text style={styles.countdownDivider}>|</Text>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </View>
-              )}
-            </View>
             )}
 
             {/* 敲击间隔滑块 */}
             {playMode === 'auto' && (
-            <View style={styles.sliderBlock}>
-              <Text style={styles.sliderLabel}>敲击间隔 (0.5)s</Text>
-              <View style={styles.sliderRow}>
-                <View style={styles.sliderThumb} />
-                <View style={styles.sliderTrack} />
+              <View style={styles.sliderBlock}>
+                <Text style={styles.sliderLabel}>敲击间隔 (0.5)s</Text>
+                <View style={styles.sliderRow}>
+                  <View style={styles.sliderThumb} />
+                  <View style={styles.sliderTrack} />
+                </View>
               </View>
-            </View>
             )}
 
             {/* 音色选择 */}
@@ -189,7 +203,7 @@ export default function SettingsPanel({ visible, onClose }) {
               </View>
             </View>
 
-            {/* 联系 & 链接区 */}
+            {/* 链接区 */}
             <View style={styles.linksSection}>
               <Pressable style={styles.menuRow}>
                 <Text style={styles.menuText}>发表评论</Text>
@@ -203,10 +217,6 @@ export default function SettingsPanel({ visible, onClose }) {
                 <Text style={styles.menuText}>购买</Text>
               </Pressable>
             </View>
-
-            {/* 版权页脚 */}
-            {/* <Text style={styles.footer}>粤ICP备2024208142号-2A</Text>
-            <View style={{ height: 30 }} /> */}
           </ScrollView>
         </View>
       </SafeAreaView>
