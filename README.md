@@ -10,13 +10,16 @@
 
 ### 当前进度
 
-Phase 1（UI 复刻）进行中：主界面、木鱼交互、设置面板静态 UI 已完成。
+- **Phase 1（UI 复刻）**: 进行中。主界面、木鱼交互、设置面板 UI 已基本完成。
+- **TypeScript 迁移**: 已完成。项目已全面启用 TypeScript 强化类型安全。
 
 ### 技术栈
 
 | 类别 | 技术 |
 |------|------|
 | 框架 | React Native 0.81 + Expo SDK 54 |
+| 语言 | TypeScript |
+| 包管理 | Bun |
 | 路由/状态 | 组件本地 state（Phase 2 引入 Zustand） |
 | 矢量图 | react-native-svg |
 | 图标 | @expo/vector-icons (Ionicons) |
@@ -24,9 +27,12 @@ Phase 1（UI 复刻）进行中：主界面、木鱼交互、设置面板静态 
 
 ### 快速开始
 
+推荐环境：[Bun](https://bun.sh/)
+
 ```bash
 cd my-app
-npx expo start
+bun install
+bun run start
 ```
 
 - 手机扫描二维码（需安装 **Expo Go**）
@@ -37,17 +43,18 @@ npx expo start
 
 ```
 my-app/
-├── App.js                  # 根组件
-├── index.js                # Expo 入口
+├── App.tsx                 # 根组件
+├── index.ts                # Expo 入口
 ├── app.json                # Expo 配置
+├── tsconfig.json           # TS 配置
 ├── docs/
 │   ├── DESIGN.md           # PRD & 架构设计
 │   ├── COMPONENTS.md       # 组件 API 文档
 │   └── ROADMAP.md          # 开发路线图
 └── src/
     └── components/
-        ├── WoodenFish.js   # 木鱼交互组件
-        └── SettingsPanel.js # 设置面板
+        ├── WoodenFish.tsx   # 木鱼交互组件
+        └── SettingsPanel.tsx # 设置面板
 ```
 
 ### 文档
