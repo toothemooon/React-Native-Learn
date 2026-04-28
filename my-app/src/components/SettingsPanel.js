@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 const COUNTDOWN_OPTIONS = ['1 min', '3 min', '5 min', '10 min', '15 min', '30 min'];
+const COUNT_OPTIONS = ['10', '50', '100', '200', '500', '1000'];
 
 const SOUNDS = [
   { id: '00', locked: false },
@@ -33,6 +34,7 @@ export default function SettingsPanel({ visible, onClose }) {
   const [playMode, setPlayMode] = useState('auto');
   const [stopMode, setStopMode] = useState('never');
   const [selectedCountdown, setSelectedCountdown] = useState('5 min');
+  const [selectedCount, setSelectedCount] = useState('100');
 
   return (
     <Modal visible={visible} transparent={false} animationType="slide">
@@ -80,12 +82,12 @@ export default function SettingsPanel({ visible, onClose }) {
             </View>
 
             {/* 停止模式 */}
+            {playMode === 'auto' && (
             <View style={styles.segmentBlock}>
               <Text style={styles.sectionLabel}>停止模式</Text>
               <View style={styles.segmentContainer}>
                 {[
                   { key: 'never', label: '永不' },
-                  { key: 'date', label: '日期' },
                   { key: 'count', label: '计数' },
                   { key: 'countdown', label: '倒计时' },
                 ].map((item) => (
@@ -100,6 +102,27 @@ export default function SettingsPanel({ visible, onClose }) {
                   </Pressable>
                 ))}
               </View>
+
+              {/* 计数预选项 */}
+              {stopMode === 'count' && (
+                <View style={styles.countdownRow}>
+                  {COUNT_OPTIONS.map((opt, index) => (
+                    <React.Fragment key={opt}>
+                      <Pressable onPress={() => setSelectedCount(opt)}>
+                        <Text style={[
+                          styles.countdownOption,
+                          selectedCount === opt && styles.countdownOptionActive,
+                        ]}>
+                          {opt}
+                        </Text>
+                      </Pressable>
+                      {index < COUNT_OPTIONS.length - 1 && (
+                        <Text style={styles.countdownDivider}>|</Text>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </View>
+              )}
 
               {/* 倒计时时长选项 */}
               {stopMode === 'countdown' && (
@@ -122,8 +145,10 @@ export default function SettingsPanel({ visible, onClose }) {
                 </View>
               )}
             </View>
+            )}
 
             {/* 敲击间隔滑块 */}
+            {playMode === 'auto' && (
             <View style={styles.sliderBlock}>
               <Text style={styles.sliderLabel}>敲击间隔 (0.5)s</Text>
               <View style={styles.sliderRow}>
@@ -131,15 +156,7 @@ export default function SettingsPanel({ visible, onClose }) {
                 <View style={styles.sliderTrack} />
               </View>
             </View>
-
-            {/* 间隔偏差程度滑块 */}
-            <View style={styles.sliderBlock}>
-              <Text style={styles.sliderLabel}>间隔偏差程度 (1%)</Text>
-              <View style={styles.sliderRow}>
-                <View style={styles.sliderThumb} />
-                <View style={styles.sliderTrack} />
-              </View>
-            </View>
+            )}
 
             {/* 音色选择 */}
             <View style={styles.soundBlock}>
@@ -184,10 +201,6 @@ export default function SettingsPanel({ visible, onClose }) {
 
               <Pressable style={styles.menuRow}>
                 <Text style={styles.menuText}>购买</Text>
-              </Pressable>
-
-              <Pressable style={styles.menuRow}>
-                <Text style={styles.menuText}>历史记录</Text>
               </Pressable>
             </View>
 
