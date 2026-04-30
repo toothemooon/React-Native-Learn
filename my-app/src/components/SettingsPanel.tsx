@@ -7,36 +7,19 @@ import {
   Pressable,
   TextInput,
   Modal,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
-const COUNTDOWN_OPTIONS: string[] = ['1 min', '3 min', '5 min', '10 min', '15 min', '30 min'];
-const COUNT_OPTIONS: string[] = ['10', '50', '100', '200', '500', '1000'];
-
-type SoundItem = {
-  id: string;
-  locked: boolean;
-  bold?: boolean;
-};
-
-const SOUNDS: SoundItem[] = [
-  { id: '00', locked: false },
-  { id: '01', locked: false },
-  { id: '02', locked: false },
-  { id: '03', locked: false },
-  { id: '04', locked: false },
-  { id: '05', locked: false },
-  { id: '06', locked: true },
-  { id: '07', locked: true },
-  { id: '08', locked: true },
-  { id: '09', locked: true },
-  { id: '10', locked: true },
-  { id: '11', locked: true },
-  { id: '12', locked: true, bold: true },
+// 塔罗牌式的音色数据
+const SOUNDS = [
+  { id: '紫金', name: '紫金', locked: false, color: '#A08090' },
+  { id: '白玉', name: '白玉', locked: false, color: '#C0D0C0' },
+  { id: '檀木', name: '檀木', locked: false, color: '#A07050' },
+  { id: '黄铜', name: '黄铜', locked: true, color: '#A09050' },
+  { id: '赛博', name: '赛博', locked: true, color: '#5090A0' },
 ];
-
-type PlayMode = 'auto' | 'manual';
-type StopMode = 'never' | 'count' | 'countdown';
 
 interface Props {
   visible: boolean;
@@ -44,387 +27,453 @@ interface Props {
 }
 
 export default function SettingsPanel({ visible, onClose }: Props) {
-  const [selectedSound, setSelectedSound] = useState<string>('00');
-  const [playMode, setPlayMode] = useState<PlayMode>('auto');
-  const [stopMode, setStopMode] = useState<StopMode>('never');
-  const [selectedCountdown, setSelectedCountdown] = useState<string>('5 min');
-  const [selectedCount, setSelectedCount] = useState<string>('100');
+  const [mantra, setMantra] = useState('功德 +1');
+  const [isEditingMantra, setIsEditingMantra] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [healthSync, setHealthSync] = useState(false); // 应对 4.3 审核的冥想同步开关
+  const [stopMode, setStopMode] = useState('never'); // 'never', 'count', 'time'
+  const [selectedSound, setSelectedSound] = useState('檀木');
+
+  // 频率假数据（Phase 1 纯 UI 阶段）
+  const [intervalVal, setIntervalVal] = useState('0.5');
 
   return (
-    <Modal visible={visible} transparent={false} animationType="slide">
-      <SafeAreaView style={styles.safeArea}>
-        {/* 顶部 ∞ 标识 */}
-        <View style={styles.topBar}>
-          <Text style={styles.infinityIcon}>∞</Text>
-        </View>
-
-        {/* 设置面板卡片 */}
-        <View style={styles.panel}>
-          {/* 顶栏：关闭按钮 + 悬浮文字输入 */}
-          <View style={styles.headerRow}>
-            <Pressable onPress={onClose} style={styles.closeBtn}>
-              <Text style={styles.closeText}>✕</Text>
-            </Pressable>
-            <TextInput
-              style={styles.headerInput}
-              placeholder="点击输入悬浮文字 如:功德 +1"
-              placeholderTextColor="#555"
-            />
+    <Modal visible={visible} transparent={true} animationType="fade">
+      <View style={styles.overlay}>
+        <SafeAreaView style={styles.safeArea}>
+          
+          {/* 顶部环境与设备栏 */}
+          <View style={styles.header}>
+            <View style={styles.headerLeft} />
+            <Text style={styles.headerTitle}>S E T T I N G S</Text>
+            <View style={styles.headerIcons}>
+              <Ionicons name="star-outline" size={20} color="#666" style={styles.icon} />
+              <Ionicons name="arrow-redo-outline" size={20} color="#666" style={styles.icon} />
+              <Ionicons name="heart-outline" size={20} color="#666" style={styles.icon} />
+            </View>
           </View>
 
-          <ScrollView
-            style={styles.scroll}
-            showsVerticalScrollIndicator={true}
-            indicatorStyle="white"
-          >
-            {/* 播放模式 */}
-            <View style={styles.segmentBlock}>
-              <Text style={styles.sectionLabel}>播放模式</Text>
-              <View style={styles.segmentContainer}>
-                {([{ key: 'auto', label: '自动' }, { key: 'manual', label: '手敲' }] as { key: PlayMode; label: string }[]).map((item) => (
-                  <Pressable
-                    key={item.key}
-                    style={[styles.segmentBtn, playMode === item.key && styles.segmentBtnActive]}
-                    onPress={() => setPlayMode(item.key)}
-                  >
-                    <Text style={[styles.segmentText, playMode === item.key && styles.segmentTextActive]}>
-                      {item.label}
-                    </Text>
+          <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+            
+            {/* 1. 祈福铭牌区 */}
+            <View style={styles.mantraSection}>
+              <Text style={styles.sectionLabel}>祈福语 (Mantra)</Text>
+              <View style={styles.mantraCard}>
+                {isEditingMantra ? (
+                  <TextInput
+                    style={styles.mantraInput}
+                    value={mantra}
+                    onChangeText={setMantra}
+                    onBlur={() => setIsEditingMantra(false)}
+                    autoFocus
+                    selectionColor="#FFF"
+                    maxLength={10}
+                  />
+                ) : (
+                  <Pressable onPress={() => setIsEditingMantra(true)}>
+                    <Text style={styles.mantraText}>「 {mantra} 」</Text>
                   </Pressable>
-                ))}
+                )}
               </View>
+              <Text style={styles.mantraHint}>*点击修改祈福铭语*</Text>
             </View>
 
-            {/* 停止模式 */}
-            {playMode === 'auto' && (
-              <View style={styles.segmentBlock}>
-                <Text style={styles.sectionLabel}>停止模式</Text>
-                <View style={styles.segmentContainer}>
-                  {([
-                    { key: 'never', label: '永不' },
-                    { key: 'count', label: '计数' },
-                    { key: 'countdown', label: '倒计时' },
-                  ] as { key: StopMode; label: string }[]).map((item) => (
-                    <Pressable
-                      key={item.key}
-                      style={[styles.segmentBtn, stopMode === item.key && styles.segmentBtnActive]}
-                      onPress={() => setStopMode(item.key)}
-                    >
-                      <Text style={[styles.segmentText, stopMode === item.key && styles.segmentTextActive]}>
-                        {item.label}
-                      </Text>
-                    </Pressable>
+            {/* 2. 控制中枢 Bento Box */}
+            <View style={styles.bentoGrid}>
+              
+              {/* 播放模式卡片 */}
+              <View style={styles.bentoCard}>
+                <Text style={styles.cardTitle}>播放模式</Text>
+                <View style={styles.switchWrapper}>
+                  <Text style={[styles.switchLabel, autoPlay && styles.switchLabelActive]}>
+                    自动敲击
+                  </Text>
+                  <Switch
+                    value={autoPlay}
+                    onValueChange={setAutoPlay}
+                    trackColor={{ false: '#222', true: '#E0E0E0' }}
+                    thumbColor={autoPlay ? '#111' : '#666'}
+                    ios_backgroundColor="#222"
+                  />
+                </View>
+              </View>
+
+              {/* 频率调节卡片 (自定义刻度尺 UI) */}
+              <View style={[styles.bentoCard, !autoPlay && { opacity: 0.3 }]}>
+                <Text style={styles.cardTitle}>频率调节</Text>
+                <Text style={styles.freqValue}>{intervalVal}s</Text>
+                <View style={styles.rulerContainer}>
+                  {/* 模拟刻度 */}
+                  {[...Array(11)].map((_, i) => (
+                    <View key={i} style={[styles.rulerTick, i % 5 === 0 && styles.rulerTickLong]} />
                   ))}
-                </View>
-
-                {/* 计数预选项 */}
-                {stopMode === 'count' && (
-                  <View style={styles.countdownRow}>
-                    {COUNT_OPTIONS.map((opt, index) => (
-                      <React.Fragment key={opt}>
-                        <Pressable onPress={() => setSelectedCount(opt)}>
-                          <Text style={[
-                            styles.countdownOption,
-                            selectedCount === opt && styles.countdownOptionActive,
-                          ]}>
-                            {opt}
-                          </Text>
-                        </Pressable>
-                        {index < COUNT_OPTIONS.length - 1 && (
-                          <Text style={styles.countdownDivider}>|</Text>
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </View>
-                )}
-
-                {/* 倒计时时长选项 */}
-                {stopMode === 'countdown' && (
-                  <View style={styles.countdownRow}>
-                    {COUNTDOWN_OPTIONS.map((opt, index) => (
-                      <React.Fragment key={opt}>
-                        <Pressable onPress={() => setSelectedCountdown(opt)}>
-                          <Text style={[
-                            styles.countdownOption,
-                            selectedCountdown === opt && styles.countdownOptionActive,
-                          ]}>
-                            {opt}
-                          </Text>
-                        </Pressable>
-                        {index < COUNTDOWN_OPTIONS.length - 1 && (
-                          <Text style={styles.countdownDivider}>|</Text>
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </View>
-                )}
-              </View>
-            )}
-
-            {/* 敲击间隔滑块 */}
-            {playMode === 'auto' && (
-              <View style={styles.sliderBlock}>
-                <Text style={styles.sliderLabel}>敲击间隔 (0.5)s</Text>
-                <View style={styles.sliderRow}>
-                  <View style={styles.sliderThumb} />
-                  <View style={styles.sliderTrack} />
+                  {/* 模拟滑块指针 */}
+                  <View style={styles.rulerThumb} />
                 </View>
               </View>
-            )}
 
-            {/* 音色选择 */}
-            <View style={styles.soundBlock}>
-              <Text style={styles.sectionLabel}>音色</Text>
-              <View style={styles.soundGrid}>
-                {SOUNDS.map((s) => (
-                  <Pressable
-                    key={s.id}
-                    style={[
-                      styles.soundCell,
-                      s.id === selectedSound && styles.soundCellSelected,
-                    ]}
-                    onPress={() => !s.locked && setSelectedSound(s.id)}
-                  >
-                    {s.locked && (
-                      <View style={styles.buyBadge}>
-                        <Text style={styles.buyText}>BUY</Text>
-                      </View>
-                    )}
-                    <Text
+              {/* 禅修目标卡片 */}
+              <View style={styles.bentoCard}>
+                <Text style={styles.cardTitle}>禅修目标</Text>
+                <View style={styles.targetRow}>
+                  {['never', 'count', 'time'].map((mode, idx) => {
+                    const topLabels = ['无', '计数', '时长'];
+                    const btmLabels = ['(永不)', '', ''];
+                    const isSelected = stopMode === mode;
+                    return (
+                      <Pressable
+                        key={mode}
+                        style={[styles.targetBtn, isSelected && styles.targetBtnActive]}
+                        onPress={() => setStopMode(mode)}
+                      >
+                        <Text style={[styles.targetTextTop, isSelected && styles.targetTextActive]}>
+                          {topLabels[idx]}
+                        </Text>
+                        {btmLabels[idx] ? (
+                          <Text style={[styles.targetTextBtm, isSelected && styles.targetTextActive]}>
+                            {btmLabels[idx]}
+                          </Text>
+                        ) : null}
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {/* 冥想同步卡片 (Health Sync) */}
+              <View style={styles.bentoCard}>
+                <Text style={styles.cardTitle}>冥想同步</Text>
+                <View style={styles.syncRow}>
+                  <View style={styles.healthIconBox}>
+                    <Ionicons name="heart" size={18} color="#FF3B30" />
+                  </View>
+                  <Switch
+                    value={healthSync}
+                    onValueChange={setHealthSync}
+                    trackColor={{ false: '#222', true: '#444' }}
+                    thumbColor={healthSync ? '#FFF' : '#666'}
+                    ios_backgroundColor="#222"
+                  />
+                </View>
+              </View>
+
+            </View>
+
+            {/* 3. 横向音色画廊 (Cover Flow) */}
+            <View style={styles.gallerySection}>
+              <Text style={styles.sectionLabel}>单行横向 Cover Flow (音色收藏室)</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.galleryContent}
+              >
+                {SOUNDS.map((s) => {
+                  const isSelected = selectedSound === s.id;
+                  return (
+                    <Pressable
+                      key={s.id}
+                      onPress={() => !s.locked && setSelectedSound(s.id)}
                       style={[
-                        styles.soundLabel,
-                        s.bold && styles.soundLabelBold,
+                        styles.galleryCard,
+                        isSelected && styles.galleryCardActive,
+                        s.locked && { opacity: 0.4 }
                       ]}
                     >
-                      {s.id}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+                      {/* 背景柔光渲染 */}
+                      <View style={[styles.galleryGlow, { backgroundColor: s.color }]} />
+                      
+                      {s.locked && (
+                        <Ionicons name="cart" size={14} color="#666" style={styles.cartIcon} />
+                      )}
+                      {/* 竖向中文排版 */}
+                      <Text style={[styles.galleryText, isSelected && styles.galleryTextActive]}>
+                        {s.name.split('').join('\n')}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
             </View>
 
-            {/* 链接区 */}
-            <View style={styles.linksSection}>
-              <Pressable style={styles.menuRow}>
-                <Text style={styles.menuText}>发表评论</Text>
-              </Pressable>
-
-              <Pressable style={styles.menuRow}>
-                <Text style={styles.menuText}>分享此App</Text>
-              </Pressable>
-
-              <Pressable style={styles.menuRow}>
-                <Text style={styles.menuText}>购买</Text>
+            {/* 底部确认按钮 */}
+            <View style={styles.footer}>
+              <Pressable style={styles.doneBtn} onPress={onClose}>
+                <Text style={styles.doneBtnText}>✓ DONE SETTINGS</Text>
               </Pressable>
             </View>
+
           </ScrollView>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(10, 10, 12, 0.96)', // 极暗极简背景，不依赖 expo-blur
+  },
   safeArea: {
     flex: 1,
-    backgroundColor: '#000000',
   },
-  topBar: {
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  infinityIcon: {
-    color: '#FFFFFF',
-    fontSize: 30,
-  },
-  panel: {
-    flex: 1,
-    backgroundColor: '#1C1C1E',
-    borderRadius: 16,
-    marginHorizontal: 10,
-    marginBottom: 10,
-    overflow: 'hidden',
-  },
-  headerRow: {
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#333',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
-  closeBtn: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
+  headerLeft: {
+    width: 60, // 占位保持居中
   },
-  closeText: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '300',
+  headerTitle: {
+    color: '#E0E0E0',
+    fontSize: 16,
+    fontWeight: '400',
+    letterSpacing: 4,
   },
-  headerInput: {
-    flex: 1,
-    color: '#FFFFFF',
-    fontSize: 15,
-    paddingVertical: 4,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#555',
+  headerIcons: {
+    flexDirection: 'row',
+    width: 60,
+    justifyContent: 'flex-end',
+    gap: 12,
+  },
+  icon: {
+    marginLeft: 4,
   },
   scroll: {
     flex: 1,
   },
-  sliderBlock: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-  },
-  sliderLabel: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    marginBottom: 18,
-  },
-  sliderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 8,
-  },
-  sliderThumb: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#FFFFFF',
-    zIndex: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  sliderTrack: {
-    flex: 1,
-    height: 2,
-    backgroundColor: '#444',
-    marginLeft: -6,
-  },
-  soundBlock: {
-    paddingHorizontal: 20,
-    paddingTop: 28,
-  },
   sectionLabel: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    marginBottom: 14,
+    color: '#888',
+    fontSize: 13,
+    marginBottom: 12,
+    marginLeft: 20,
   },
-  soundGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
+  mantraSection: {
+    marginTop: 10,
+    paddingHorizontal: 20,
   },
-  soundCell: {
-    width: 58,
-    height: 58,
-    backgroundColor: '#2C2C2E',
-    borderRadius: 8,
+  mantraCard: {
+    backgroundColor: '#161618',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#2A2A2C',
+    paddingVertical: 24,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    overflow: 'hidden',
   },
-  soundCellSelected: {
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-  },
-  buyBadge: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: '#3D8B3D',
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderBottomLeftRadius: 4,
-  },
-  buyText: {
+  mantraText: {
     color: '#FFFFFF',
-    fontSize: 7,
-    fontWeight: 'bold',
-  },
-  soundLabel: {
-    color: '#FFFFFF',
-    fontSize: 15,
-  },
-  soundLabelBold: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  linksSection: {
-    paddingHorizontal: 20,
-    marginTop: 28,
-  },
-  menuRow: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#333',
-  },
-  menuText: {
-    color: '#FFFFFF',
-    fontSize: 15,
-  },
-  segmentBlock: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-  },
-  segmentContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#2C2C2E',
-    borderRadius: 10,
-    padding: 3,
-  },
-  segmentBtn: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  segmentBtnActive: {
-    backgroundColor: '#636366',
-  },
-  segmentText: {
-    color: '#8E8E93',
-    fontSize: 14,
-  },
-  segmentTextActive: {
-    color: '#FFFFFF',
+    fontSize: 24,
     fontWeight: '500',
+    letterSpacing: 2,
+    textShadowColor: 'rgba(255,255,255,0.4)',
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
-  countdownRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 14,
-    backgroundColor: '#2C2C2E',
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-  },
-  countdownOption: {
-    color: '#8E8E93',
-    fontSize: 13,
-    paddingHorizontal: 6,
-  },
-  countdownOptionActive: {
+  mantraInput: {
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontSize: 24,
+    fontWeight: '500',
+    letterSpacing: 2,
+    textAlign: 'center',
   },
-  countdownDivider: {
-    color: '#444',
-    fontSize: 13,
-  },
-  footer: {
+  mantraHint: {
     color: '#555',
     fontSize: 11,
     textAlign: 'center',
+    marginTop: 8,
+  },
+  bentoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 16,
     marginTop: 24,
+    gap: 12,
+  },
+  bentoCard: {
+    width: '48%', // 两列布局
+    backgroundColor: '#161618',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#2A2A2C',
+    padding: 16,
+  },
+  cardTitle: {
+    color: '#E0E0E0',
+    fontSize: 14,
+    fontWeight: '400',
+    marginBottom: 16,
+  },
+  switchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#222',
+    padding: 6,
+    paddingLeft: 12,
+    borderRadius: 99,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  switchLabel: {
+    color: '#666',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  switchLabelActive: {
+    color: '#FFF',
+  },
+  freqValue: {
+    color: '#FFF',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  rulerContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    height: 24,
+    paddingHorizontal: 8,
+    position: 'relative',
+  },
+  rulerTick: {
+    width: 1,
+    height: 8,
+    backgroundColor: '#444',
+  },
+  rulerTickLong: {
+    height: 14,
+    backgroundColor: '#666',
+  },
+  rulerThumb: {
+    position: 'absolute',
+    left: '45%',
+    bottom: -4,
+    width: 2,
+    height: 20,
+    backgroundColor: '#FFF',
+    shadowColor: '#FFF',
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  targetRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 6,
+  },
+  targetBtn: {
+    flex: 1,
+    backgroundColor: '#222',
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'transparent',
+  },
+  targetBtnActive: {
+    backgroundColor: '#333',
+    borderColor: '#555',
+  },
+  targetTextTop: {
+    color: '#666',
+    fontSize: 13,
+  },
+  targetTextBtm: {
+    color: '#666',
+    fontSize: 10,
+    marginTop: 2,
+  },
+  targetTextActive: {
+    color: '#E0E0E0',
+  },
+  syncRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  healthIconBox: {
+    width: 36,
+    height: 36,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gallerySection: {
+    marginTop: 32,
+  },
+  galleryContent: {
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+  galleryCard: {
+    width: 80,
+    height: 140,
+    backgroundColor: '#161618',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#2A2A2C',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  galleryCardActive: {
+    borderColor: '#FFF',
+    transform: [{ scale: 1.05 }],
+  },
+  galleryGlow: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    opacity: 0.15,
+    filter: 'blur(10px)',
+  },
+  galleryText: {
+    color: '#888',
+    fontSize: 18,
+    fontWeight: '400',
+    letterSpacing: 4,
+    lineHeight: 24,
+    textAlign: 'center',
+    zIndex: 1,
+  },
+  galleryTextActive: {
+    color: '#FFF',
+    fontWeight: '600',
+  },
+  cartIcon: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 2,
+  },
+  footer: {
+    paddingHorizontal: 20,
+    marginTop: 40,
+    marginBottom: 60,
+  },
+  doneBtn: {
+    height: 54,
+    backgroundColor: '#161618',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#333',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  doneBtnText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: 2,
   },
 });
