@@ -8,8 +8,8 @@ import {
   TextInput,
   Modal,
   Switch,
+  SafeAreaView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 // 塔罗牌式的音色数据
@@ -30,7 +30,6 @@ export default function SettingsPanel({ visible, onClose }: Props) {
   const [mantra, setMantra] = useState('功德 +1');
   const [isEditingMantra, setIsEditingMantra] = useState(false);
   const [autoPlay, setAutoPlay] = useState(true);
-  const [healthSync, setHealthSync] = useState(false); // 应对 4.3 审核的冥想同步开关
   const [stopMode, setStopMode] = useState('never'); // 'never', 'count', 'time'
   const [selectedSound, setSelectedSound] = useState('檀木');
 
@@ -42,14 +41,12 @@ export default function SettingsPanel({ visible, onClose }: Props) {
       <View style={styles.overlay}>
         <SafeAreaView style={styles.safeArea}>
           
-          {/* 顶部环境与设备栏 */}
+          {/* 顶部调音台标识 */}
           <View style={styles.header}>
             <View style={styles.headerLeft} />
-            <Text style={styles.headerTitle}>S E T T I N G S</Text>
+            <Text style={styles.headerTitle}>法 器 配 置</Text>
             <View style={styles.headerIcons}>
-              <Ionicons name="star-outline" size={20} color="#666" style={styles.icon} />
-              <Ionicons name="arrow-redo-outline" size={20} color="#666" style={styles.icon} />
-              <Ionicons name="heart-outline" size={20} color="#666" style={styles.icon} />
+              {/* 去除了系统级图标，保持绝对沉浸 */}
             </View>
           </View>
 
@@ -81,8 +78,8 @@ export default function SettingsPanel({ visible, onClose }: Props) {
             {/* 2. 控制中枢 Bento Box */}
             <View style={styles.bentoGrid}>
               
-              {/* 播放模式卡片 */}
-              <View style={styles.bentoCard}>
+              {/* 播放模式卡片 (50%宽度) */}
+              <View style={styles.bentoCardHalf}>
                 <Text style={styles.cardTitle}>播放模式</Text>
                 <View style={styles.switchWrapper}>
                   <Text style={[styles.switchLabel, autoPlay && styles.switchLabelActive]}>
@@ -98,8 +95,8 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                 </View>
               </View>
 
-              {/* 频率调节卡片 (自定义刻度尺 UI) */}
-              <View style={[styles.bentoCard, !autoPlay && { opacity: 0.3 }]}>
+              {/* 频率调节卡片 (50%宽度) */}
+              <View style={[styles.bentoCardHalf, !autoPlay && { opacity: 0.3 }]}>
                 <Text style={styles.cardTitle}>频率调节</Text>
                 <Text style={styles.freqValue}>{intervalVal}s</Text>
                 <View style={styles.rulerContainer}>
@@ -112,8 +109,8 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                 </View>
               </View>
 
-              {/* 禅修目标卡片 */}
-              <View style={styles.bentoCard}>
+              {/* 禅修目标卡片 (横跨两列，100%宽度) */}
+              <View style={styles.bentoCardFull}>
                 <Text style={styles.cardTitle}>禅修目标</Text>
                 <View style={styles.targetRow}>
                   {['never', 'count', 'time'].map((mode, idx) => {
@@ -137,23 +134,6 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                       </Pressable>
                     );
                   })}
-                </View>
-              </View>
-
-              {/* 冥想同步卡片 (Health Sync) */}
-              <View style={styles.bentoCard}>
-                <Text style={styles.cardTitle}>冥想同步</Text>
-                <View style={styles.syncRow}>
-                  <View style={styles.healthIconBox}>
-                    <Ionicons name="heart" size={18} color="#FF3B30" />
-                  </View>
-                  <Switch
-                    value={healthSync}
-                    onValueChange={setHealthSync}
-                    trackColor={{ false: '#222', true: '#444' }}
-                    thumbColor={healthSync ? '#FFF' : '#666'}
-                    ios_backgroundColor="#222"
-                  />
                 </View>
               </View>
 
@@ -198,7 +178,7 @@ export default function SettingsPanel({ visible, onClose }: Props) {
             {/* 底部确认按钮 */}
             <View style={styles.footer}>
               <Pressable style={styles.doneBtn} onPress={onClose}>
-                <Text style={styles.doneBtnText}>✓ DONE SETTINGS</Text>
+                <Text style={styles.doneBtnText}>✓ 收起面板</Text>
               </Pressable>
             </View>
 
@@ -212,7 +192,7 @@ export default function SettingsPanel({ visible, onClose }: Props) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(10, 10, 12, 0.96)', // 极暗极简背景，不依赖 expo-blur
+    backgroundColor: 'rgba(10, 10, 12, 0.96)',
   },
   safeArea: {
     flex: 1,
@@ -225,7 +205,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   headerLeft: {
-    width: 60, // 占位保持居中
+    width: 60,
   },
   headerTitle: {
     color: '#E0E0E0',
@@ -234,13 +214,7 @@ const styles = StyleSheet.create({
     letterSpacing: 4,
   },
   headerIcons: {
-    flexDirection: 'row',
-    width: 60,
-    justifyContent: 'flex-end',
-    gap: 12,
-  },
-  icon: {
-    marginLeft: 4,
+    width: 60, // 占位
   },
   scroll: {
     flex: 1,
@@ -293,8 +267,16 @@ const styles = StyleSheet.create({
     marginTop: 24,
     gap: 12,
   },
-  bentoCard: {
-    width: '48%', // 两列布局
+  bentoCardHalf: {
+    width: '48%',
+    backgroundColor: '#161618',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#2A2A2C',
+    padding: 16,
+  },
+  bentoCardFull: {
+    width: '100%',
     backgroundColor: '#161618',
     borderRadius: 16,
     borderWidth: 1,
@@ -364,12 +346,12 @@ const styles = StyleSheet.create({
   targetRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 6,
+    gap: 12,
   },
   targetBtn: {
     flex: 1,
     backgroundColor: '#222',
-    paddingVertical: 10,
+    paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -382,29 +364,15 @@ const styles = StyleSheet.create({
   },
   targetTextTop: {
     color: '#666',
-    fontSize: 13,
+    fontSize: 14,
   },
   targetTextBtm: {
     color: '#666',
-    fontSize: 10,
-    marginTop: 2,
+    fontSize: 11,
+    marginTop: 4,
   },
   targetTextActive: {
     color: '#E0E0E0',
-  },
-  syncRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 4,
-  },
-  healthIconBox: {
-    width: 36,
-    height: 36,
-    backgroundColor: '#FFF',
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   gallerySection: {
     marginTop: 32,

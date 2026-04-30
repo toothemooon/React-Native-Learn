@@ -5,19 +5,21 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import WoodenFish from './src/components/WoodenFish';
 import SettingsPanel from './src/components/SettingsPanel';
+import AppSettings from './src/components/AppSettings';
 
 export default function App() {
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [instrumentPanelVisible, setInstrumentPanelVisible] = useState(false);
+  const [appSettingsVisible, setAppSettingsVisible] = useState(false);
   const [strikes, setStrikes] = useState(0);
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          {/* 顶部栏：时间交给系统状态栏，右上角设置按钮 */}
+          {/* 顶部栏：时间交给系统状态栏，右上角应用设置按钮 */}
           <View style={styles.header}>
-            <View /> {/* 左侧占位 */}
-            <Pressable onPress={() => setSettingsVisible(true)} style={styles.settingsBtn}>
+            <View style={{ width: 44 }} />
+            <Pressable onPress={() => setAppSettingsVisible(true)} style={styles.settingsBtn}>
               <Ionicons name="settings-outline" size={22} color="#A1A1A6" />
             </Pressable>
           </View>
@@ -56,17 +58,24 @@ export default function App() {
               </View>
             </View>
 
-            <Pressable style={styles.adjustBtn} onPress={() => setSettingsVisible(true)}>
-              <Text style={styles.adjustBtnText}>— 调整设置 —</Text>
+            <Pressable style={styles.adjustBtn} onPress={() => setInstrumentPanelVisible(true)}>
+              <Text style={styles.adjustBtnText}>— 调整法器 —</Text>
             </Pressable>
           </View>
 
           <StatusBar style="light" />
         </View>
 
+        {/* 底部法器/调音台面板 */}
         <SettingsPanel
-          visible={settingsVisible}
-          onClose={() => setSettingsVisible(false)}
+          visible={instrumentPanelVisible}
+          onClose={() => setInstrumentPanelVisible(false)}
+        />
+        
+        {/* 右上角全屏系统设置面板 */}
+        <AppSettings
+          visible={appSettingsVisible}
+          onClose={() => setAppSettingsVisible(false)}
         />
       </SafeAreaView>
     </SafeAreaProvider>
