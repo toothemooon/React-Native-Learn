@@ -2,77 +2,66 @@
 
 > 最后更新：2026-04-30
 
-## 核心策略
+## 核心策略：从“工具”转向“意境”
+
+为摆脱竞品同质化，项目将在 Phase 1 强化 UI 质感，在 Phase 2 和 Phase 3 从**交互维度、视觉叙事、功能生态**三个方向进行突破。
 
 | 阶段 | 状态 | 目标 |
 |------|------|------|
-| **Phase 1: 核心 UI 与状态层** | 🟡 进行中 | 1:1 像素级复刻视觉、设置面板，搭建全局状态管理(Zustand)与本地持久化(AsyncStorage) |
-| **Phase 2: 视·听·触反馈闭环** | ⬜ 未开始 | 完成敲击反馈循环(震动、音频)、悬浮粒子动画、自动化引擎配置 |
-| **Phase 3: 差异化演进** | ⬜ 未开始 | 修改主题交互、替换视觉元素（如其他减压物品）、增加更多正向情绪机制 |
+| **Phase 1: 核心 UI 与状态层** | 🟡 进行中 | 搭建基础框架，打磨极致 UI 质感与微交互，随后完成全局状态管理(Zustand) |
+| **Phase 2: 反馈闭环与深度交互**| ⬜ 未开始 | 实现多维物理交互（长按连击、滑动摩擦、摇晃重力），融合白噪音，建立沉浸听觉/触觉闭环 |
+| **Phase 3: 意境化与生态打通**  | ⬜ 未开始 | 引入动态材质与背景（Skia Shader）、包浆成长机制、收集系统、Apple Health 联动与云端共振 |
 
-### Phase 1 完成进度
-
-- [x] 纯黑背景主界面布局
-- [x] 顶栏（齿轮图标 + ∞ 模式切换）
-- [x] 木鱼矢量图（按下缩放 + 颜色变化）
-- [x] 设置面板 UI（Modal 全屏）
-  - [x] 悬浮文字输入框
-  - [x] 播放模式切换 (Segmented Control)
-  - [x] 停止模式配置 (计数/倒计时选择器)
-  - [x] 敲击间隔滑块（静态 UI）
-  - [x] 音色网格（00–12，锁定 BUY 角标）
-  - [x] 链接与操作列表
-- [ ] **状态全局化 (Zustand)**
-- [ ] **数据持久化 (AsyncStorage)**
-- [ ] **真实可拖动滑块 (@react-native-community/slider)**
+### Phase 1 核心 UI 与视觉精雕
+- [x] 纯黑背景主界面布局、木鱼矢量图、基础按压动画
+- [x] 设置面板 UI（文字输入、播放/停止模式、音色网格）
+- [ ] **UI 质感升级**：引入 `expo-blur` 毛玻璃效果，优化排版体系；通过 SVG `RadialGradient` 提升木鱼图形的三维光影反馈；加入水波纹微交互。
+- [ ] **真实可拖动滑块 (@react-native-community/slider)** 极简样式定制
+- [ ] **状态全局化 (Zustand)** 与 **数据持久化 (AsyncStorage)**
 
 ---
 
-## 一、 1:1 复刻拆解（Phase 1 视觉部分）
+## 一、 核心差异化设计 (Phase 2 & Phase 3)
 
-### 1. 核心视觉与布局 (Main Screen)
-- **纯黑背景** (`#000000`) 沉浸式。
-- **正中央交互区**：主物体（木鱼）矢量图。松开为线框，按下为实心填充，并伴随 `0.95` 倍的微缩放效果。
-- **顶栏**：右上角设置或模式切换按钮（∞ 符号）。
+### 1. 交互维度突破：物理真实感
+- **多端手势**：除了单击，引入“长按”（模拟快速诵经加速）与“绕边缘滑动”（模拟颂钵的低频嗡鸣）。
+- **重力感应**：利用加速度计，摇晃手机时触发木槌与腔体的碰撞音效，增加零碎的真实感。
+- **白噪音融合**：不再只有干巴的敲击声，支持叠加环境音（如：雨夜、篝火、山谷）。
 
-### 2. 参数与设置面板 (Settings Panel)
-- **当前实现**：`SettingsPanel.tsx` 使用 React Native `Modal` 实现全屏上推面板。
-- **面板模块**：
-  1. **自定义文字输入**：顶部 TextInput 框，支持自定义飘字内容。
-  2. **播放与停止模式**：
-     - **播放模式**：支持“自动”与“手敲”切换。
-     - **停止模式**：支持“永不”、“计数”与“倒计时”三种逻辑 UI。
-  3. **音色矩阵 (Grid)**：
-     - 00 到 12 的网格选择器。
-     - 锁定状态 UI：未解锁音色右上角带绿色 `BUY` 角标。
+### 2. 视觉与叙事：意境与成长
+- **动态环境 (Shader)**：摒弃死板的纯黑，通过 `react-native-skia` 引入高性能流体烟雾、雨滴等动态极简背景。
+- **材质差异**：木鱼、金属钵、玉石、赛博机械，不同材质对应专属的物理反馈动画与震动频率。
+- **视觉包浆系统**：打破传统的“功德+1”文字，敲击达到阈值后，本体颜色和光泽产生微妙变幻（如材质逐渐变得温润透亮），提供长期正向情绪价值。
+
+### 3. 生态打通：社交、收集与健康
+- **收集系统**：将音色转化为收集品，通过特定节日或累计敲击次数解锁隐藏音效（例如：猫咪叫声、水滴声、电子 8-bit）。
+- **健康联动**：将用户敲击木鱼的投入时间转化为“正念/冥想分钟数”同步至系统健康 App，提升产品的工具价值与过审成功率。
+- **全球共振 (云禅房)**：通过微秒级 WebSocket 数据，展现其他用户的“敲击波纹”，带来“众生皆在”的宏大孤独与共鸣。
+- **桌面扩展**：增加 Widget 小组件与锁屏 Live Activity 支持。
 
 ---
 
-## 二、 核心数据模型 (Zustand Store)
-
-> Phase 1 的核心目标之一，构建统一的状态源，避免 Props/State 嵌套过深。
+## 二、 核心数据模型 (Zustand Store 扩展设想)
 
 ```typescript
 interface AppState {
-  // === 需要持久化的偏好设置 (AsyncStorage) ===
-  floatingText: string;            // 悬浮文字 (如: "功德 +1")
-  selectedSoundId: string;         // 当前选中音色 ID
+  // 基础偏好
+  floatingText: string;
+  selectedSoundId: string;
+  selectedMaterial: 'wood' | 'metal' | 'jade' | 'cyber'; // 材质皮肤
+  backgroundEnv: 'none' | 'rain' | 'smoke';             // 动态环境
   
-  // === 自动化引擎配置 ===
-  playMode: 'auto' | 'manual';     // 自动/手动模式
-  stopMode: 'never' | 'count' | 'countdown'; // 停止条件
-  autoInterval: number;            // 自动敲击基础间隔 (ms)
+  // 自动化与混音
+  playMode: 'auto' | 'manual';
+  autoInterval: number;
+  whiteNoiseVolume: number;        // 白噪音音量
   
-  // === 运行时状态 (不持久化) ===
-  isSettingsVisible: boolean;      // 设置面板可见性
+  // 成长与数据
+  totalTaps: number;               // 历史总敲击次数（用于计算“包浆”等级）
+  mindfulnessMinutes: number;      // 累计正念时长
+  unlockedSounds: string[];        // 收集系统：已解锁的隐藏音效ID数组
   
-  // === Actions ===
-  setFloatingText: (text: string) => void;
-  setSelectedSoundId: (id: string) => void;
-  setPlayMode: (mode: 'auto' | 'manual') => void;
-  setStopMode: (mode: 'never' | 'count' | 'countdown') => void;
-  setAutoInterval: (interval: number) => void;
-  setSettingsVisible: (visible: boolean) => void;
+  // Actions...
 }
 ```
 
@@ -92,6 +81,6 @@ my-app/
 │   └── ROADMAP.md                 # 开发路线图
 └── src/
     └── components/
-        ├── WoodenFish.tsx          # 木鱼主交互组件
-        └── SettingsPanel.tsx       # 设置面板（Modal）
+        ├── WoodenFish.tsx         # 木鱼主交互组件
+        └── SettingsPanel.tsx      # 设置面板
 ```
