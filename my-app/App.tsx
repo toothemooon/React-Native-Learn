@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Pressable } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import WoodenFish from './src/components/WoodenFish';
 import SettingsPanel from './src/components/SettingsPanel';
@@ -9,35 +10,37 @@ export default function App() {
   const [settingsVisible, setSettingsVisible] = useState(false);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {/* 顶部导航栏 */}
-        <View style={styles.header}>
-          <Pressable onPress={() => setSettingsVisible(true)} style={styles.iconButton}>
-            <Ionicons name="settings-sharp" size={32} color="#777777" />
-          </Pressable>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          {/* 顶部导航栏 */}
+          <View style={styles.header}>
+            <Pressable onPress={() => setSettingsVisible(true)} style={styles.iconButton}>
+              <Ionicons name="settings-sharp" size={32} color="#777777" />
+            </Pressable>
 
-          <Pressable onPress={() => console.log('切换模式')} style={styles.iconButton}>
-            <Ionicons name="infinite" size={32} color="#FFFFFF" />
-          </Pressable>
+            <Pressable onPress={() => console.log('切换模式')} style={styles.iconButton}>
+              <Ionicons name="infinite" size={32} color="#FFFFFF" />
+            </Pressable>
 
-          {/* 为了居中对齐，右侧放一个空的等宽占位 view */}
-          <View style={{ width: 44, height: 44 }} />
+            {/* 为了居中对齐，右侧放一个空的等宽占位 view */}
+            <View style={{ width: 44, height: 44 }} />
+          </View>
+
+          {/* 核心木鱼交互区域 */}
+          <View style={styles.mainContent}>
+            <WoodenFish />
+          </View>
+
+          <StatusBar style="light" />
         </View>
 
-        {/* 核心木鱼交互区域 */}
-        <View style={styles.mainContent}>
-          <WoodenFish />
-        </View>
-
-        <StatusBar style="light" />
-      </View>
-
-      <SettingsPanel
-        visible={settingsVisible}
-        onClose={() => setSettingsVisible(false)}
-      />
-    </SafeAreaView>
+        <SettingsPanel
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

@@ -7,8 +7,8 @@ import {
   Pressable,
   TextInput,
   Modal,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const COUNTDOWN_OPTIONS: string[] = ['1 min', '3 min', '5 min', '10 min', '15 min', '30 min'];
 const COUNT_OPTIONS: string[] = ['10', '50', '100', '200', '500', '1000'];
