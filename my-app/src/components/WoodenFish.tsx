@@ -46,6 +46,7 @@ export default function WoodenFish() {
       
       {/* 木鱼交互层 */}
       <Pressable
+        testID="wooden-fish-pressable"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={({ pressed }) => [
