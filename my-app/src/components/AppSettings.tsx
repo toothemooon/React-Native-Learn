@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, Modal, Switch, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Modal, Switch } from 'react-native';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Props {
@@ -13,85 +14,87 @@ export default function AppSettings({ visible, onClose }: Props) {
 
   return (
     <Modal visible={visible} transparent={false} animationType="slide">
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>设置</Text>
-          <Pressable onPress={onClose} style={styles.closeBtn}>
-            <Text style={styles.closeText}>完成</Text>
-          </Pressable>
-        </View>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>设置</Text>
+            <Pressable onPress={onClose} style={styles.closeBtn}>
+              <Text style={styles.closeText}>完成</Text>
+            </Pressable>
+          </View>
 
-        <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-          
-          {/* 体验配置 */}
-          <Text style={styles.sectionTitle}>体验</Text>
-          <View style={styles.card}>
-            <View style={styles.row}>
-              <View style={styles.rowLeft}>
-                <View style={[styles.iconBox, { backgroundColor: '#FF9500' }]}>
-                  <Ionicons name="phone-portrait-outline" size={16} color="#FFF" />
+          <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+            
+            {/* 体验配置 */}
+            <Text style={styles.sectionTitle}>体验</Text>
+            <View style={styles.card}>
+              <View style={styles.row}>
+                <View style={styles.rowLeft}>
+                  <View style={[styles.iconBox, { backgroundColor: '#FF9500' }]}>
+                    <Ionicons name="phone-portrait-outline" size={16} color="#FFF" />
+                  </View>
+                  <Text style={styles.rowText}>全局物理震动</Text>
                 </View>
-                <Text style={styles.rowText}>全局物理震动</Text>
+                <Switch 
+                  value={hapticsEnabled} 
+                  onValueChange={setHapticsEnabled}
+                  trackColor={{ false: '#333', true: '#32D74B' }}
+                />
               </View>
-              <Switch 
-                value={hapticsEnabled} 
-                onValueChange={setHapticsEnabled}
-                trackColor={{ false: '#333', true: '#32D74B' }}
-              />
-            </View>
-            <View style={styles.divider} />
-            <View style={styles.row}>
-              <View style={styles.rowLeft}>
-                <View style={[styles.iconBox, { backgroundColor: '#FF3B30' }]}>
-                  <Ionicons name="heart" size={16} color="#FFF" />
+              <View style={styles.divider} />
+              <View style={styles.row}>
+                <View style={styles.rowLeft}>
+                  <View style={[styles.iconBox, { backgroundColor: '#FF3B30' }]}>
+                    <Ionicons name="heart" size={16} color="#FFF" />
+                  </View>
+                  <Text style={styles.rowText}>Apple Health 冥想同步</Text>
                 </View>
-                <Text style={styles.rowText}>Apple Health 冥想同步</Text>
+                <Switch 
+                  value={healthSync} 
+                  onValueChange={setHealthSync}
+                  trackColor={{ false: '#333', true: '#32D74B' }} 
+                />
               </View>
-              <Switch 
-                value={healthSync} 
-                onValueChange={setHealthSync}
-                trackColor={{ false: '#333', true: '#32D74B' }} 
-              />
             </View>
-          </View>
 
-          {/* 支持与购买 */}
-          <Text style={styles.sectionTitle}>支持</Text>
-          <View style={styles.card}>
-            <Pressable style={styles.row}>
-              <Text style={styles.rowText}>恢复购买</Text>
-              <Ionicons name="chevron-forward" size={18} color="#666" />
-            </Pressable>
-            <View style={styles.divider} />
-            <Pressable style={styles.row}>
-              <Text style={styles.rowText}>分享给朋友</Text>
-              <Ionicons name="share-outline" size={18} color="#666" />
-            </Pressable>
-            <View style={styles.divider} />
-            <Pressable style={styles.row}>
-              <Text style={styles.rowText}>去 App Store 评价</Text>
-              <Ionicons name="star-outline" size={18} color="#666" />
-            </Pressable>
-          </View>
+            {/* 支持与购买 */}
+            <Text style={styles.sectionTitle}>支持</Text>
+            <View style={styles.card}>
+              <Pressable style={styles.row}>
+                <Text style={styles.rowText}>恢复购买</Text>
+                <Ionicons name="chevron-forward" size={18} color="#666" />
+              </Pressable>
+              <View style={styles.divider} />
+              <Pressable style={styles.row}>
+                <Text style={styles.rowText}>分享给朋友</Text>
+                <Ionicons name="share-outline" size={18} color="#666" />
+              </Pressable>
+              <View style={styles.divider} />
+              <Pressable style={styles.row}>
+                <Text style={styles.rowText}>去 App Store 评价</Text>
+                <Ionicons name="star-outline" size={18} color="#666" />
+              </Pressable>
+            </View>
 
-          {/* 关于 */}
-          <Text style={styles.sectionTitle}>关于</Text>
-          <View style={styles.card}>
-            <Pressable style={styles.row}>
-              <Text style={styles.rowText}>隐私政策</Text>
-              <Ionicons name="chevron-forward" size={18} color="#666" />
-            </Pressable>
-            <View style={styles.divider} />
-            <Pressable style={styles.row}>
-              <Text style={styles.rowText}>服务条款</Text>
-              <Ionicons name="chevron-forward" size={18} color="#666" />
-            </Pressable>
-          </View>
+            {/* 关于 */}
+            <Text style={styles.sectionTitle}>关于</Text>
+            <View style={styles.card}>
+              <Pressable style={styles.row}>
+                <Text style={styles.rowText}>隐私政策</Text>
+                <Ionicons name="chevron-forward" size={18} color="#666" />
+              </Pressable>
+              <View style={styles.divider} />
+              <Pressable style={styles.row}>
+                <Text style={styles.rowText}>服务条款</Text>
+                <Ionicons name="chevron-forward" size={18} color="#666" />
+              </Pressable>
+            </View>
 
-          <Text style={styles.versionText}>WoodenFish v1.0.0</Text>
+            <Text style={styles.versionText}>WoodenFish v1.0.0</Text>
 
-        </ScrollView>
-      </SafeAreaView>
+          </ScrollView>
+        </SafeAreaView>
+      </SafeAreaProvider>
     </Modal>
   );
 }

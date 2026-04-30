@@ -8,8 +8,8 @@ import {
   TextInput,
   Modal,
   Switch,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 // 塔罗牌式的音色数据
@@ -38,10 +38,11 @@ export default function SettingsPanel({ visible, onClose }: Props) {
 
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
-      <View style={styles.overlay}>
-        <SafeAreaView style={styles.safeArea}>
-          
-          {/* 顶部调音台标识 */}
+      <SafeAreaProvider>
+        <View style={styles.overlay}>
+          <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+            
+            {/* 顶部调音台标识 */}
           <View style={styles.header}>
             <View style={styles.headerLeft} />
             <Text style={styles.headerTitle}>法 器 配 置</Text>
@@ -182,9 +183,10 @@ export default function SettingsPanel({ visible, onClose }: Props) {
               </Pressable>
             </View>
 
-          </ScrollView>
-        </SafeAreaView>
-      </View>
+            </ScrollView>
+          </SafeAreaView>
+        </View>
+      </SafeAreaProvider>
     </Modal>
   );
 }

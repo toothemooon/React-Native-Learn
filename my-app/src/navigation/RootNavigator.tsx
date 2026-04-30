@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import HomeScreen from '../screens/HomeScreen';
 import PlayerScreen from '../screens/PlayerScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 // 占位页
 function DiscoverScreen() {
@@ -13,9 +14,6 @@ function DiscoverScreen() {
 }
 function JourneyScreen() {
   return <View style={styles.placeholder}><Text style={styles.text}>功德 (Journey)</Text></View>;
-}
-function ProfileScreen() {
-  return <View style={styles.placeholder}><Text style={styles.text}>我的 (Profile)</Text></View>;
 }
 
 const Tab = createBottomTabNavigator();
