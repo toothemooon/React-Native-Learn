@@ -1,224 +1,152 @@
 import React, { useRef, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Animated,
-  Easing,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Animated, Easing } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Svg, { Path, Circle } from 'react-native-svg';
+import { useIsFocused } from '@react-navigation/native';
+import Svg, { Path, Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import MilestoneList, { Milestone } from '../components/MilestoneList';
 
-// ─── Mock 数据（MVP 阶段 hardcode，Phase 3 替换为 Zustand store）─────────────
+// ── Mock 数据（Phase 3 接入 Zustand 后替换）────────────────────────────────
 const MOCK_RANK = '心无挂碍';
 const MOCK_RANK_LEVEL = 3;
-const MOCK_TOTAL_MINUTES = 154; // 2h 34min
+const MOCK_TOTAL_MINUTES = 154;
 const MOCK_CONSECUTIVE_DAYS = 21;
 
 const MOCK_MILESTONES: Milestone[] = [
-  { id: '1', title: '首次禅修',      subtitle: '踏上修行之路',  unlocked: true },
-  { id: '2', title: '累计 30 分钟', subtitle: '初燃香火',      unlocked: true },
-  { id: '3', title: '连续 7 天',    subtitle: '七日定心',      unlocked: false },
-  { id: '4', title: '累计 1 小时',  subtitle: '点亮心灯',      unlocked: false },
-  { id: '5', title: '连续 21 天',   subtitle: '廿一日不断',    unlocked: false },
-  { id: '6', title: '累计 10 小时', subtitle: '入定之门',      unlocked: false },
+  { id: '1', title: '首次禅修',     subtitle: '踏上修行之路', status: 'unlocked' },
+  { id: '2', title: '累计 30 分钟', subtitle: '初燃香火',     status: 'unlocked' },
+  { id: '3', title: '连续 7 天',    subtitle: '七日定心',     status: 'in-progress',
+    progress: { current: 4, total: 7, remaining: 3, unit: '天' } },
+  { id: '4', title: '累计 1 小时',  subtitle: '点亮心灯',     status: 'in-progress',
+    progress: { current: 154, total: 180, remaining: 26, unit: '分钟' } },
+  { id: '5', title: '连续 21 天',   subtitle: '廿一日不断',   status: 'distant' },
+  { id: '6', title: '累计 10 小时', subtitle: '入定之门',     status: 'distant' },
 ];
 
-// ─── 工具函数：分钟转为可读时长 ────────────────────────────────────────────
-function formatMinutes(minutes: number): string {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
+function formatMinutes(min: number): string {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
   if (h === 0) return `${m} 分钟`;
   if (m === 0) return `${h} 小时`;
   return `${h} 小时 ${m} 分`;
 }
 
-// ─── 盘坐人像 SVG 组件 ────────────────────────────────────────────────────
+// ── 盘坐人像（扩大版，含光晕）────────────────────────────────────────────
 function MeditatingFigure() {
+  const cx = 140;
   return (
-    <Svg width={220} height={250} viewBox="0 0 220 250">
-      {/* 气息线：飘散虚线，象征呼吸与气 */}
-      <Path
-        d="M 88 62 Q 72 42 82 18"
-        stroke="rgba(255,255,255,0.08)"
-        strokeWidth={1}
-        fill="none"
-        strokeDasharray="3 7"
-        strokeLinecap="round"
-      />
-      <Path
-        d="M 110 52 Q 110 30 113 8"
-        stroke="rgba(255,255,255,0.06)"
-        strokeWidth={1}
-        fill="none"
-        strokeDasharray="2 8"
-        strokeLinecap="round"
-      />
-      <Path
-        d="M 132 62 Q 148 42 138 18"
-        stroke="rgba(255,255,255,0.08)"
-        strokeWidth={1}
-        fill="none"
-        strokeDasharray="3 7"
-        strokeLinecap="round"
-      />
+    <Svg width={280} height={300} viewBox="0 0 280 300">
+      <Defs>
+        <RadialGradient id="halo" cx="50%" cy="32%" r="38%">
+          <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.10} />
+          <Stop offset="100%" stopColor="#FFFFFF" stopOpacity={0} />
+        </RadialGradient>
+      </Defs>
 
-      {/* 头部：细圆 */}
-      <Circle
-        cx={110}
-        cy={74}
-        r={15}
-        stroke="rgba(255,255,255,0.22)"
-        strokeWidth={1.2}
-        fill="none"
-      />
+      {/* 氤氲光晕（最底层） */}
+      <Circle cx={cx} cy={90} r={110} fill="url(#halo)" />
 
-      {/* 肩膀：宽缓贝塞尔弧线 */}
-      <Path
-        d="M 58 112 Q 110 100 162 112"
-        stroke="rgba(255,255,255,0.20)"
-        strokeWidth={1.2}
-        fill="none"
-        strokeLinecap="round"
-      />
+      {/* 气息线 */}
+      <Path d="M 112 76 Q 90 50 102 20" stroke="rgba(255,255,255,0.09)" strokeWidth={1} fill="none" strokeDasharray="3 8" strokeLinecap="round" />
+      <Path d="M 140 64 Q 140 36 143 8"  stroke="rgba(255,255,255,0.06)" strokeWidth={1} fill="none" strokeDasharray="2 9" strokeLinecap="round" />
+      <Path d="M 168 76 Q 190 50 178 20" stroke="rgba(255,255,255,0.09)" strokeWidth={1} fill="none" strokeDasharray="3 8" strokeLinecap="round" />
 
-      {/* 左侧身体 */}
-      <Path
-        d="M 58 112 Q 52 145 64 164"
-        stroke="rgba(255,255,255,0.14)"
-        strokeWidth={1.2}
-        fill="none"
-        strokeLinecap="round"
-      />
+      {/* 头部 */}
+      <Circle cx={cx} cy={90} r={20} stroke="rgba(255,255,255,0.22)" strokeWidth={1.2} fill="none" />
 
-      {/* 右侧身体 */}
-      <Path
-        d="M 162 112 Q 168 145 156 164"
-        stroke="rgba(255,255,255,0.14)"
-        strokeWidth={1.2}
-        fill="none"
-        strokeLinecap="round"
-      />
+      {/* 肩膀 */}
+      <Path d="M 72 136 Q 140 122 208 136" stroke="rgba(255,255,255,0.20)" strokeWidth={1.2} fill="none" strokeLinecap="round" />
 
-      {/* 盘腿底线 */}
-      <Path
-        d="M 52 168 Q 110 160 168 168"
-        stroke="rgba(255,255,255,0.20)"
-        strokeWidth={1.2}
-        fill="none"
-        strokeLinecap="round"
-      />
+      {/* 左/右身体 */}
+      <Path d="M 72 136 Q 64 178 80 202"  stroke="rgba(255,255,255,0.14)" strokeWidth={1.2} fill="none" strokeLinecap="round" />
+      <Path d="M 208 136 Q 216 178 200 202" stroke="rgba(255,255,255,0.14)" strokeWidth={1.2} fill="none" strokeLinecap="round" />
 
-      {/* 左膝 */}
-      <Path
-        d="M 64 164 Q 56 174 68 180"
-        stroke="rgba(255,255,255,0.14)"
-        strokeWidth={1.2}
-        fill="none"
-        strokeLinecap="round"
-      />
+      {/* 盘腿 */}
+      <Path d="M 64 206 Q 140 194 216 206" stroke="rgba(255,255,255,0.20)" strokeWidth={1.2} fill="none" strokeLinecap="round" />
+      <Path d="M 80 202 Q 70 216 86 224"   stroke="rgba(255,255,255,0.14)" strokeWidth={1.2} fill="none" strokeLinecap="round" />
+      <Path d="M 200 202 Q 210 216 194 224" stroke="rgba(255,255,255,0.14)" strokeWidth={1.2} fill="none" strokeLinecap="round" />
 
-      {/* 右膝 */}
-      <Path
-        d="M 156 164 Q 164 174 152 180"
-        stroke="rgba(255,255,255,0.14)"
-        strokeWidth={1.2}
-        fill="none"
-        strokeLinecap="round"
-      />
-
-      {/* 莲座：三重半弧，由上到下渐淡渐宽 */}
-      <Path
-        d="M 78 186 Q 110 178 142 186"
-        stroke="rgba(255,255,255,0.14)"
-        strokeWidth={1}
-        fill="none"
-        strokeLinecap="round"
-      />
-      <Path
-        d="M 66 194 Q 110 184 154 194"
-        stroke="rgba(255,255,255,0.10)"
-        strokeWidth={1}
-        fill="none"
-        strokeLinecap="round"
-      />
-      <Path
-        d="M 54 202 Q 110 190 166 202"
-        stroke="rgba(255,255,255,0.07)"
-        strokeWidth={1}
-        fill="none"
-        strokeLinecap="round"
-      />
+      {/* 莲座三重弧 */}
+      <Path d="M 100 230 Q 140 218 180 230" stroke="rgba(255,255,255,0.14)" strokeWidth={1} fill="none" strokeLinecap="round" />
+      <Path d="M 84 240 Q 140 226 196 240"  stroke="rgba(255,255,255,0.10)" strokeWidth={1} fill="none" strokeLinecap="round" />
+      <Path d="M 68 250 Q 140 234 212 250"  stroke="rgba(255,255,255,0.07)" strokeWidth={1} fill="none" strokeLinecap="round" />
     </Svg>
   );
 }
 
-// ─── 主屏幕 ──────────────────────────────────────────────────────────────
+// ── 主屏幕 ────────────────────────────────────────────────────────────────
 export default function JourneyScreen() {
-  const breathAnim = useRef(new Animated.Value(1)).current;
+  const isFocused = useIsFocused();
 
-  // 呼吸动画：每 4.4 秒完成一次吸-呼，幅度 1.5%，极为克制
+  // 呼吸
+  const breathScale = useRef(new Animated.Value(1)).current;
+  // 入场
+  const entryScale   = useRef(new Animated.Value(0.96)).current;
+  const figureOpacity = useRef(new Animated.Value(0)).current;
+  const rankOpacity   = useRef(new Animated.Value(0)).current;
+  const statsOpacity  = useRef(new Animated.Value(0)).current;
+  const listOpacity   = useRef(new Animated.Value(0)).current;
+
+  // 呼吸循环（始终运行）
   useEffect(() => {
-    Animated.loop(
+    const loop = Animated.loop(
       Animated.sequence([
-        Animated.timing(breathAnim, {
-          toValue: 1.015,
-          duration: 2200,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-        Animated.timing(breathAnim, {
-          toValue: 1.0,
-          duration: 2200,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
+        Animated.timing(breathScale, { toValue: 1.015, duration: 2200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+        Animated.timing(breathScale, { toValue: 1.0,   duration: 2200, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
       ])
-    ).start();
-  }, [breathAnim]);
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [breathScale]);
+
+  // 入场动画（每次 Tab 聚焦触发）
+  useEffect(() => {
+    if (!isFocused) return;
+    figureOpacity.setValue(0); entryScale.setValue(0.96);
+    rankOpacity.setValue(0); statsOpacity.setValue(0); listOpacity.setValue(0);
+
+    Animated.parallel([
+      Animated.timing(figureOpacity, { toValue: 1,   duration: 650, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(entryScale,   { toValue: 1,   duration: 700, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+      Animated.timing(rankOpacity,  { toValue: 1,   duration: 500, delay: 150, useNativeDriver: true }),
+      Animated.timing(statsOpacity, { toValue: 1,   duration: 500, delay: 260, useNativeDriver: true }),
+      Animated.timing(listOpacity,  { toValue: 1,   duration: 500, delay: 360, useNativeDriver: true }),
+    ]).start();
+  }, [isFocused]);
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
-        <ScrollView
-          style={styles.scroll}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {/* ① 顶层：段位区 */}
-          <View style={styles.rankSection}>
+      <SafeAreaView style={styles.safe} edges={['top']}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+
+          {/* ① 段位 */}
+          <Animated.View style={[styles.rankSection, { opacity: rankOpacity }]}>
             <Text style={styles.rankText}>{MOCK_RANK}</Text>
             <Text style={styles.rankLevel}>第 {MOCK_RANK_LEVEL} 境</Text>
-          </View>
+          </Animated.View>
 
-          {/* ② 中层：盘坐人像 + 呼吸动画 */}
-          <View style={styles.figureSection}>
-            <Animated.View
-              style={{ transform: [{ scale: breathAnim }] }}
-            >
-              <MeditatingFigure />
-            </Animated.View>
-          </View>
+          {/* ② 人像（呼吸 × 入场 两个 scale 叠加） */}
+          <Animated.View style={[
+            styles.figureSection,
+            { opacity: figureOpacity, transform: [{ scale: breathScale }, { scale: entryScale }] },
+          ]}>
+            <MeditatingFigure />
+          </Animated.View>
 
-          {/* ③ 底层：数据指标双卡片 */}
-          <View style={styles.statsRow}>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>
-                {formatMinutes(MOCK_TOTAL_MINUTES)}
-              </Text>
-              <Text style={styles.statLabel}>累计禅修时长</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{MOCK_CONSECUTIVE_DAYS} 天</Text>
-              <Text style={styles.statLabel}>连续禅修</Text>
-            </View>
-          </View>
+          {/* ③ 统计（主次分布） */}
+          <Animated.View style={[styles.statsSection, { opacity: statsOpacity }]}>
+            <Text style={styles.statsPrimary}>
+              {MOCK_CONSECUTIVE_DAYS}
+              <Text style={styles.statsPrimaryUnit}> 天</Text>
+            </Text>
+            <Text style={styles.statsPrimaryLabel}>连续禅修</Text>
+            <Text style={styles.statsSecondary}>累计 · {formatMinutes(MOCK_TOTAL_MINUTES)}</Text>
+          </Animated.View>
 
-          {/* ④ 成就区：MilestoneList 组件 */}
-          <MilestoneList milestones={MOCK_MILESTONES} />
+          {/* ④ 成就区 */}
+          <Animated.View style={{ opacity: listOpacity }}>
+            <MilestoneList milestones={MOCK_MILESTONES} />
+          </Animated.View>
+
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -226,76 +154,28 @@ export default function JourneyScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0B0D11',
-  },
-  safeArea: {
-    flex: 1,
-  },
-  scroll: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 120, // 避开悬浮 Bottom Tabs
-  },
+  container: { flex: 1, backgroundColor: '#0B0D11' },
+  safe:      { flex: 1 },
+  content:   { paddingBottom: 120 },
 
-  // ── 段位区 ──
-  rankSection: {
+  rankSection:  { alignItems: 'center', paddingTop: 28, paddingBottom: 2, gap: 4 },
+  rankText:     { color: 'rgba(255,255,255,0.35)', fontSize: 12, letterSpacing: 5, fontWeight: '300' },
+  rankLevel:    { color: 'rgba(255,255,255,0.18)', fontSize: 11, letterSpacing: 2, fontWeight: '300' },
+
+  figureSection: { alignItems: 'center', paddingVertical: 4 },
+
+  statsSection: {
     alignItems: 'center',
-    paddingTop: 28,
-    paddingBottom: 4,
-    gap: 4,
-  },
-  rankText: {
-    color: 'rgba(255,255,255,0.35)',
-    fontSize: 12,
-    letterSpacing: 5,
-    fontWeight: '300',
-  },
-  rankLevel: {
-    color: 'rgba(255,255,255,0.18)',
-    fontSize: 11,
-    letterSpacing: 2,
-    fontWeight: '300',
-  },
-
-  // ── 人像区 ──
-  figureSection: {
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-
-  // ── 统计卡片 ──
-  statsRow: {
-    flexDirection: 'row',
+    paddingVertical: 24,
     marginHorizontal: 24,
     marginBottom: 32,
-    backgroundColor: '#15171A',
-    borderRadius: 20,
-    borderWidth: 1,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
     borderColor: 'rgba(255,255,255,0.05)',
-    paddingVertical: 20,
+    gap: 4,
   },
-  statCard: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 6,
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: 'rgba(255,255,255,0.05)',
-    marginVertical: 4,
-  },
-  statValue: {
-    color: 'rgba(255,255,255,0.82)',
-    fontSize: 18,
-    fontWeight: '300',
-    letterSpacing: 1,
-  },
-  statLabel: {
-    color: 'rgba(255,255,255,0.3)',
-    fontSize: 11,
-    letterSpacing: 1,
-  },
+  statsPrimary:      { color: 'rgba(255,255,255,0.85)', fontSize: 64, fontWeight: '200', letterSpacing: -2, lineHeight: 72 },
+  statsPrimaryUnit:  { fontSize: 22, fontWeight: '300', letterSpacing: 0 },
+  statsPrimaryLabel: { color: 'rgba(255,255,255,0.30)', fontSize: 11, letterSpacing: 3, fontWeight: '300' },
+  statsSecondary:    { color: 'rgba(255,255,255,0.22)', fontSize: 13, letterSpacing: 1, fontWeight: '300', marginTop: 8 },
 });
