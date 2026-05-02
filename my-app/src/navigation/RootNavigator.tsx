@@ -7,12 +7,9 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import PlayerScreen from '../screens/PlayerScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import JourneyScreen from '../screens/JourneyScreen';
 import { MainTabsParamList, RootStackParamList } from './types';
 
-// 占位页
-function JourneyScreen() {
-  return <View style={styles.placeholder}><Text style={styles.text}>历程 (Journey)</Text></View>;
-}
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
