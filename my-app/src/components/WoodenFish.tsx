@@ -46,8 +46,12 @@ export default function WoodenFish() {
       
       {/* 木鱼交互层 */}
       <Pressable
+        testID="wooden-fish-pressable"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        accessibilityRole="button"
+        accessibilityLabel="敲击木鱼"
+        accessibilityHint="点击以敲击木鱼"
         style={({ pressed }) => [
           styles.container,
           { transform: [{ scale: pressed ? 0.96 : 1 }] },

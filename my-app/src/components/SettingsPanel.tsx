@@ -19,7 +19,10 @@ const SOUNDS = [
   { id: '檀木', name: '檀木', locked: false, color: '#A07050' },
   { id: '黄铜', name: '黄铜', locked: true, color: '#A09050' },
   { id: '赛博', name: '赛博', locked: true, color: '#5090A0' },
-];
+].map(s => ({
+  ...s,
+  verticalName: s.name.split('').join('\n')
+}));
 
 const RULER_TICKS = Array.from({ length: 11 });
 
@@ -170,7 +173,7 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                       )}
                       {/* 竖向中文排版 */}
                       <Text style={[styles.galleryText, isSelected && styles.galleryTextActive]}>
-                        {s.name.split('').join('\n')}
+                        {s.verticalName}
                       </Text>
                     </Pressable>
                   );

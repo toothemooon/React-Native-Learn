@@ -16,12 +16,23 @@ export default function ProfileScreen() {
         
         {/* 顶部栏 */}
         <View style={styles.header}>
-          <Pressable onPress={() => setSettingsVisible(true)} style={styles.iconBtn}>
+          <Pressable
+            onPress={() => setSettingsVisible(true)}
+            style={styles.iconBtn}
+            accessibilityRole="button"
+            accessibilityLabel="打开设置"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Ionicons name="settings-outline" size={24} color="#888" />
           </Pressable>
           <Text style={styles.headerTitle}>个人资料</Text>
-          <Pressable style={styles.iconBtn}>
-            <Ionicons name="gift-outline" size={24} color="#D4FF59" />
+          <Pressable
+            style={styles.iconBtn}
+            accessibilityRole="button"
+            accessibilityLabel="查看礼物"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="gift-outline" size={24} color="#A09050" />
           </Pressable>
         </View>
 
@@ -74,8 +85,12 @@ export default function ProfileScreen() {
               })}
             </View>
             
-            <Pressable style={styles.shareBtn}>
-              <Ionicons name="share-outline" size={16} color="#D4FF59" />
+            <Pressable
+              style={styles.shareBtn}
+              accessibilityRole="button"
+              accessibilityLabel="分享我的连续记录"
+            >
+              <Ionicons name="share-outline" size={18} color="#000" />
               <Text style={styles.shareBtnText}>分享我的连续记录</Text>
             </Pressable>
           </View>
