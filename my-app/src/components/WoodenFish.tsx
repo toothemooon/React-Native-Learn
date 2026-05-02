@@ -46,6 +46,7 @@ export default function WoodenFish() {
       
       {/* 木鱼交互层 */}
       <Pressable
+        testID="wooden-fish-pressable"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={({ pressed }) => [
@@ -65,6 +66,7 @@ export default function WoodenFish() {
           
           {/* 底部物理阴影 */}
           <Path
+            testID="shadow-path"
             d="M 30 110 C 30 50, 190 50, 190 110 C 190 170, 30 170, 30 110 Z"
             fill="rgba(0,0,0,0.6)"
             transform={isPressed ? "translate(0, 2) scale(0.98)" : "translate(0, 10)"}
