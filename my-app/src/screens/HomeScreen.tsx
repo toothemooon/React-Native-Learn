@@ -30,7 +30,7 @@ export default function HomeScreen() {
               <Text style={styles.heroTitle}>檀木与夏雨</Text>
               <Text style={styles.heroDesc}>专注敲击 5 分钟，让纷扰随着雨声褪去</Text>
               <View style={styles.playBtn}>
-                <Ionicons name="play" size={16} color="#000" />
+                <Ionicons name="play" size={14} color="#D4FF59" />
                 <Text style={styles.playBtnText}>开始沉浸</Text>
               </View>
             </View>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heroTag: {
-    color: '#A09050',
+    color: '#D4FF59',
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 1,
@@ -123,18 +123,20 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   playBtn: {
-    backgroundColor: '#E0E0E0',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    backgroundColor: 'rgba(212, 255, 89, 0.1)',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
     borderRadius: 24,
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 255, 89, 0.3)',
   },
   playBtnText: {
-    color: '#000',
-    fontSize: 15,
+    color: '#D4FF59',
+    fontSize: 14,
     fontWeight: '600',
   },
   sectionTitle: {

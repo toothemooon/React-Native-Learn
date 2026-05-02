@@ -26,7 +26,7 @@ function BottomTabs() {
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#FFF',
+        tabBarActiveTintColor: '#D4FF59',
         tabBarInactiveTintColor: '#666',
         tabBarShowLabel: true,
         tabBarLabelStyle: { fontSize: 11, marginBottom: 8, fontWeight: '500' },
