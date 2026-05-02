@@ -1,6 +1,6 @@
 # 电子木鱼 (WoodenFish) — 视觉与架构设计规范
 
-> 最后更新：2026-05-02
+> 最后更新：2026-05-03
 
 ---
 
@@ -95,3 +95,24 @@ Ultimate Zen 2.0 将从感官、情感与环境三个维度，构建属于产品
 
 - 普通 Screen 使用 `<SafeAreaView edges={['top']}>`（Bottom Tabs 自动处理底部）
 - Modal 组件内部**必须**在根部包裹 `<SafeAreaProvider>`，再嵌套 `<SafeAreaView edges={['top','bottom']}>`，以确保 iOS 刘海屏不被遮挡。
+
+---
+
+## 8. 信息架构 (Information Architecture)
+
+三个 Tab 承担严格分离的角色，杜绝职责重叠：
+
+| Tab | 角色 | 核心问题 | 核心内容 |
+|-----|------|---------|----------|
+| **禅境 (Home)** | 内容层 | "今天修什么？" | Hero 卡片 → 进入 PlayerScreen 沉浸 |
+| **历程 (Journey)** | 进度层 | "我修到哪了？" | 修炼层数、连续记录、里程碑、包浆进度 |
+| **我的 (Profile)** | 身份层 | "我是谁？" | 系统设置、Apple Health、个人信息入口 |
+
+### MVP 数据策略（视觉骨架优先）
+
+历程页在 MVP 阶段采用 **"UI 骨架 + Mock 数据"** 策略：
+- UI 结构与交互完整实现（修炼层数卡片、连续记录看板、里程碑列表）
+- 数据全部 hardcode，视觉上体现完整的 Gamification 体验
+- 为 Phase 3 `Zustand Persist` 数据接入预留好 Props / State 接口，届时只需替换数据源
+
+> **设计原则**：`ProfileScreen` 职责收窄，不再重复展示统计数据。修炼统计（连续记录看板、日历）将从 ProfileScreen 迁入 JourneyScreen，ProfileScreen 保留纯粹的"身份与设置"角色。

@@ -15,7 +15,9 @@
 | 类比 | 对应代码 | 说明 |
 |------|---------|------|
 | 整个电影院（建筑本身） | `RootNavigator` | 管理所有空间，决定什么时候打开哪个门 |
-| 大厅 / 咖啡厅 / 售票处 | `Bottom Tabs`（四个 Tab） | 日常活动区，可以自由穿梭 |
+| 禅境大厅（内容层） | `HomeScreen` | "今天修什么"，连接放映厅的内容货架入口 |
+| 成长长廊（进度层） | `JourneyScreen` | "我修到哪了"，战绩与里程碑 |
+| 服务台（身份层） | `ProfileScreen` | "我是谁"，设置与个人信息 |
 | 放映厅 | `PlayerScreen`（Modal） | 一旦进入，外部世界消失，全身心沉浸 |
 | 放映厅里的调音室 | `SettingsPanel` | 只能在放映厅内使用，外面看不见 |
 | 电影院门口的服务台 | `AppSettings` | 跟看电影本身无关的行政事务（退票、投诉） |
@@ -32,7 +34,7 @@ App.tsx
            ├──【Tab 层】BottomTabs
            │    ├── HomeScreen
            │    │    └── 点击 Hero 卡片 → navigate('PlayerModal') ──────────┐
-           │    ├── JourneyScreen（占位）                                     │
+           │    ├── JourneyScreen（进度层，MVP 阶段为 Mock 数据骨架）               │
            │    └── ProfileScreen                                             │
            │         ├── useState(settingsVisible)                            │
            │         └── <AppSettings visible={settingsVisible} />            │
@@ -283,10 +285,11 @@ App.tsx
 
 ---
 
-## 附录：三大 Screen 速查
+## 附录：Screen 速查
 
 | Screen | 路径 | 主要职责 |
 |--------|------|---------|
-| `HomeScreen` | `src/screens/HomeScreen.tsx` | 禅境首页，Hero 卡片点击后 `navigate('PlayerModal')` |
-| `PlayerScreen` | `src/screens/PlayerScreen.tsx` | 全屏沉浸播放器，包含 WoodenFish 和 SettingsPanel |
-| `ProfileScreen` | `src/screens/ProfileScreen.tsx` | 个人资料，修行统计、日历，以及 AppSettings 的宿主 |
+| `HomeScreen` | `src/screens/HomeScreen.tsx` | **内容层**：禅境首页，Hero 卡片点击后 `navigate('PlayerModal')` |
+| `JourneyScreen` | `src/navigation/RootNavigator.tsx`（待独立） | **进度层**：修炼层数、连续记录、里程碑，MVP 阶段数据全部 hardcode |
+| `ProfileScreen` | `src/screens/ProfileScreen.tsx` | **身份层**：个人资料与 AppSettings 宿主。目前含统计看板，**计划迁入 JourneyScreen** |
+| `PlayerScreen` | `src/screens/PlayerScreen.tsx` | 全屏沉浸播放器，含 WoodenFish 和 SettingsPanel |
