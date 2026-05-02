@@ -21,6 +21,8 @@ const SOUNDS = [
   { id: '赛博', name: '赛博', locked: true, color: '#5090A0' },
 ];
 
+const RULER_TICKS = Array.from({ length: 11 });
+
 interface Props {
   visible: boolean;
   onClose: () => void;
@@ -102,7 +104,7 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                 <Text style={styles.freqValue}>{intervalVal}s</Text>
                 <View style={styles.rulerContainer}>
                   {/* 模拟刻度 */}
-                  {[...Array(11)].map((_, i) => (
+                  {RULER_TICKS.map((_, i) => (
                     <View key={i} style={[styles.rulerTick, i % 5 === 0 && styles.rulerTickLong]} />
                   ))}
                   {/* 模拟滑块指针 */}
