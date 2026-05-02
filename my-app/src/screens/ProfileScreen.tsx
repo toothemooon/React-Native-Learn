@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AppSettings from '../components/AppSettings';
+import MilestoneList, { Milestone } from '../components/MilestoneList';
 
 // 从 JourneyScreen 相同的 mock 数据读取（Phase 3 接入 Zustand 后统一来源）
 const MOCK_RANK = '心无挂碍';
 const MOCK_CONSECUTIVE_DAYS = 21;
+const MOCK_TOTAL_MINUTES = 154;
+
+const MOCK_MILESTONES: Milestone[] = [
+  { id: '1', title: '首次禅修',     subtitle: '踏上修行之路',       status: 'unlocked' },
+  { id: '2', title: '累计 30 分钟', subtitle: '初燃香火',           status: 'unlocked' },
+  { id: '3', title: '连续 7 天',    subtitle: '七日定心',           status: 'in-progress',
+    progress: { current: 4, total: 7, remaining: 3, unit: '天' } },
+  { id: '4', title: '累计 1 小时',  subtitle: '点亮心灯',           status: 'in-progress',
+    progress: { current: 154, total: 180, remaining: 26, unit: '分钟' } },
+  { id: '5', title: '心无挂碍',     subtitle: '连续禅修 21 天达成', status: 'unlocked' },
+  { id: '6', title: '累计 10 小时', subtitle: '入定之门',           status: 'distant' },
+];
 
 export default function ProfileScreen() {
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -37,38 +50,51 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
 
-        {/* 身份卡片（Identity Card） */}
-        <View style={styles.identityCard}>
-          {/* 头像占位 */}
-          <View style={styles.avatarRing}>
-            <Ionicons name="person-outline" size={36} color="rgba(255,255,255,0.35)" />
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          {/* 身份卡片（Identity Card） */}
+          <View style={styles.identityCard}>
+            {/* 头像占位 */}
+            <View style={styles.avatarRing}>
+              <Ionicons name="person-outline" size={36} color="rgba(255,255,255,0.35)" />
+            </View>
+
+            {/* 名称 + 段位简签 */}
+            <Text style={styles.userName}>修行者</Text>
+            <View style={styles.rankBadge}>
+              <Text style={styles.rankBadgeText}>{MOCK_RANK}</Text>
+            </View>
+
+            {/* 迷你统计双格 */}
+            <View style={styles.miniStatsRow}>
+              <View style={styles.miniStatItem}>
+                <Text style={styles.miniStatValue}>{MOCK_CONSECUTIVE_DAYS}</Text>
+                <Text style={styles.miniStatLabel}>连续天数</Text>
+              </View>
+              <View style={styles.miniStatDivider} />
+              <View style={styles.miniStatItem}>
+                <Text style={styles.miniStatValue}>2h 34m</Text>
+                <Text style={styles.miniStatLabel}>累计时长</Text>
+              </View>
+            </View>
           </View>
 
-          {/* 名称 + 段位简签 */}
-          <Text style={styles.userName}>修行者</Text>
-          <View style={styles.rankBadge}>
-            <Text style={styles.rankBadgeText}>{MOCK_RANK}</Text>
+          {/* 修行足迹（迁入） */}
+          <MilestoneList milestones={MOCK_MILESTONES} />
+
+          {/* 设置入口 */}
+          <View style={styles.menuSection}>
+            <Pressable
+              style={styles.menuRow}
+              onPress={() => setSettingsVisible(true)}
+              accessibilityRole="button"
+              accessibilityLabel="App 设置"
+            >
+              <Ionicons name="settings-outline" size={20} color="#888" />
+              <Text style={styles.menuLabel}>App 设置</Text>
+              <Ionicons name="chevron-forward" size={18} color="#555" style={{ marginLeft: 'auto' }} />
+            </Pressable>
           </View>
-
-          {/* 一句话摘要 */}
-          <Text style={styles.streakHint}>已连续禅修 {MOCK_CONSECUTIVE_DAYS} 天</Text>
-          <Text style={styles.streakNote}>详细修行足迹见「历程」</Text>
-        </View>
-
-        {/* 设置入口（可扩展） */}
-        <View style={styles.menuSection}>
-          <Pressable
-            style={styles.menuRow}
-            onPress={() => setSettingsVisible(true)}
-            accessibilityRole="button"
-            accessibilityLabel="App 设置"
-          >
-            <Ionicons name="settings-outline" size={20} color="#888" />
-            <Text style={styles.menuLabel}>App 设置</Text>
-            <Ionicons name="chevron-forward" size={18} color="#555" style={{ marginLeft: 'auto' }} />
-          </Pressable>
-        </View>
-
+        </ScrollView>
       </SafeAreaView>
 
       {/* 系统设置全屏 Modal */}
@@ -83,6 +109,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0B0D11' },
   safeArea:  { flex: 1 },
+  scrollContent: { paddingBottom: 120 },
 
   // 顶部栏
   header: {
@@ -132,8 +159,20 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(212,255,89,0.2)',
   },
   rankBadgeText: { color: '#D4FF59', fontSize: 12, letterSpacing: 2, opacity: 0.85 },
-  streakHint: { color: 'rgba(255,255,255,0.4)', fontSize: 13, letterSpacing: 0.5, marginTop: 4 },
-  streakNote: { color: 'rgba(255,255,255,0.2)', fontSize: 11, letterSpacing: 0.5 },
+
+  // 迎你统计双格
+  miniStatsRow: {
+    flexDirection: 'row',
+    marginTop: 12,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
+    width: '80%',
+  },
+  miniStatItem: { flex: 1, alignItems: 'center', gap: 4 },
+  miniStatDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.06)', marginVertical: 2 },
+  miniStatValue: { color: 'rgba(255,255,255,0.75)', fontSize: 17, fontWeight: '300', letterSpacing: 0.5 },
+  miniStatLabel: { color: 'rgba(255,255,255,0.28)', fontSize: 11, letterSpacing: 1 },
 
   // 菜单区
   menuSection: {

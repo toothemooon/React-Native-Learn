@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Animated, Easing } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 import Svg, { Path, Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
-import MilestoneList, { Milestone } from '../components/MilestoneList';
+
 
 // ── Mock 数据（Phase 3 接入 Zustand 后替换）────────────────────────────────
 const MOCK_RANK = '心无挂碍';
@@ -11,16 +11,7 @@ const MOCK_RANK_LEVEL = 3;
 const MOCK_TOTAL_MINUTES = 154;
 const MOCK_CONSECUTIVE_DAYS = 21;
 
-const MOCK_MILESTONES: Milestone[] = [
-  { id: '1', title: '首次禅修',     subtitle: '踏上修行之路', status: 'unlocked' },
-  { id: '2', title: '累计 30 分钟', subtitle: '初燃香火',     status: 'unlocked' },
-  { id: '3', title: '连续 7 天',    subtitle: '七日定心',     status: 'in-progress',
-    progress: { current: 4, total: 7, remaining: 3, unit: '天' } },
-  { id: '4', title: '累计 1 小时',  subtitle: '点亮心灯',     status: 'in-progress',
-    progress: { current: 154, total: 180, remaining: 26, unit: '分钟' } },
-  { id: '5', title: '连续 21 天',   subtitle: '廿一日不断',   status: 'distant' },
-  { id: '6', title: '累计 10 小时', subtitle: '入定之门',     status: 'distant' },
-];
+
 
 function formatMinutes(min: number): string {
   const h = Math.floor(min / 60);
@@ -34,7 +25,7 @@ function formatMinutes(min: number): string {
 function MeditatingFigure() {
   const cx = 140;
   return (
-    <Svg width={280} height={300} viewBox="0 0 280 300">
+    <Svg width={340} height={365} viewBox="0 0 280 300">
       <Defs>
         <RadialGradient id="halo" cx="50%" cy="32%" r="38%">
           <Stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.10} />
@@ -84,7 +75,6 @@ export default function JourneyScreen() {
   const figureOpacity = useRef(new Animated.Value(0)).current;
   const rankOpacity   = useRef(new Animated.Value(0)).current;
   const statsOpacity  = useRef(new Animated.Value(0)).current;
-  const listOpacity   = useRef(new Animated.Value(0)).current;
 
   // 呼吸循环（始终运行）
   useEffect(() => {
@@ -102,14 +92,13 @@ export default function JourneyScreen() {
   useEffect(() => {
     if (!isFocused) return;
     figureOpacity.setValue(0); entryScale.setValue(0.96);
-    rankOpacity.setValue(0); statsOpacity.setValue(0); listOpacity.setValue(0);
+    rankOpacity.setValue(0); statsOpacity.setValue(0);
 
     Animated.parallel([
       Animated.timing(figureOpacity, { toValue: 1,   duration: 650, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       Animated.timing(entryScale,   { toValue: 1,   duration: 700, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
       Animated.timing(rankOpacity,  { toValue: 1,   duration: 500, delay: 150, useNativeDriver: true }),
       Animated.timing(statsOpacity, { toValue: 1,   duration: 500, delay: 260, useNativeDriver: true }),
-      Animated.timing(listOpacity,  { toValue: 1,   duration: 500, delay: 360, useNativeDriver: true }),
     ]).start();
   }, [isFocused]);
 
@@ -132,7 +121,7 @@ export default function JourneyScreen() {
             <MeditatingFigure />
           </Animated.View>
 
-          {/* ③ 统计（主次分布） */}
+          {/* ③ 统计（主次分布，绑定段位叙事） */}
           <Animated.View style={[styles.statsSection, { opacity: statsOpacity }]}>
             <Text style={styles.statsPrimary}>
               {MOCK_CONSECUTIVE_DAYS}
@@ -142,12 +131,8 @@ export default function JourneyScreen() {
             <Text style={styles.statsSecondary}>累计 · {formatMinutes(MOCK_TOTAL_MINUTES)}</Text>
           </Animated.View>
 
-          {/* ④ 成就区 */}
-          <Animated.View style={{ opacity: listOpacity }}>
-            <MilestoneList milestones={MOCK_MILESTONES} />
-          </Animated.View>
-
         </ScrollView>
+
       </SafeAreaView>
     </View>
   );
