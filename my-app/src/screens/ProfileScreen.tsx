@@ -18,7 +18,7 @@ export default function ProfileScreen() {
           </Pressable>
           <Text style={styles.headerTitle}>个人资料</Text>
           <Pressable style={styles.iconBtn}>
-            <Ionicons name="gift-outline" size={24} color="#A09050" />
+            <Ionicons name="gift-outline" size={24} color="#D4FF59" />
           </Pressable>
         </View>
 
@@ -72,7 +72,7 @@ export default function ProfileScreen() {
             </View>
             
             <Pressable style={styles.shareBtn}>
-              <Ionicons name="share-outline" size={18} color="#000" />
+              <Ionicons name="share-outline" size={16} color="#D4FF59" />
               <Text style={styles.shareBtnText}>分享我的连续记录</Text>
             </Pressable>
           </View>
@@ -202,28 +202,34 @@ const styles = StyleSheet.create({
     borderRadius: 99,
   },
   calDayActive: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#D4FF59',
+    shadowColor: '#D4FF59',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 0 },
   },
   calDayText: {
     color: '#888',
     fontSize: 14,
   },
   calDayTextActive: {
-    color: '#000',
+    color: '#0B0D11',
     fontWeight: '700',
   },
   shareBtn: {
     flexDirection: 'row',
-    backgroundColor: '#E0E0E0',
+    backgroundColor: 'rgba(212, 255, 89, 0.1)',
     borderRadius: 99,
-    height: 50,
+    height: 46,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 255, 89, 0.3)',
   },
   shareBtnText: {
-    color: '#000',
-    fontSize: 15,
+    color: '#D4FF59',
+    fontSize: 14,
     fontWeight: '600',
   }
 });
