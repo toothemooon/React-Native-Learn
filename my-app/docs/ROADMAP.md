@@ -7,7 +7,7 @@
 ## 阶段一：架构重组 (Phase 1: Architecture) - ✅ 已完成
 **目标**：打破单页面工具的局限，实现 Tab 导航与木鱼 Modal 的彻底解耦。
 - [x] **底层基础**：全面启用 TypeScript，重构组件目录。
-- [x] **平台化路由**：引入 `React Navigation`，实现底层四向 Bottom Tabs（禅境、发现、历程、我的）。
+- [x] **平台化路由**：引入 `React Navigation`，实现底层三向 Bottom Tabs（禅境、历程、我的）。
 - [x] **全局播放器**：将核心木鱼剥离为全局 Z-Index 最高的 Player Modal，支持丝滑的上拉/下拉交互。
 - [x] **控制台重组**：彻底分离“法器配置 (Bento Box)”与“系统设置 (Profile 内嵌)”。
 

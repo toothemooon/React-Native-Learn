@@ -10,17 +10,14 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { MainTabsParamList, RootStackParamList } from './types';
 
 // 占位页
-function DiscoverScreen() {
-  return <View style={styles.placeholder}><Text style={styles.text}>发现 (Discover)</Text></View>;
-}
 function JourneyScreen() {
-  return <View style={styles.placeholder}><Text style={styles.text}>功德 (Journey)</Text></View>;
+  return <View style={styles.placeholder}><Text style={styles.text}>历程 (Journey)</Text></View>;
 }
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// 底层悬浮 4 向 Tab
+// 底层悬浮 3 向 Tab
 function BottomTabs() {
   return (
     <Tab.Navigator
@@ -34,7 +31,6 @@ function BottomTabs() {
         tabBarIcon: ({ color, focused }) => {
           let iconName: React.ComponentProps<typeof Ionicons>['name'] = 'home-outline';
           if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
-          else if (route.name === 'Discover') iconName = focused ? 'compass' : 'compass-outline';
           else if (route.name === 'Journey') iconName = focused ? 'leaf' : 'leaf-outline';
           else if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
           
@@ -43,7 +39,6 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: '禅境' }} />
-      <Tab.Screen name="Discover" component={DiscoverScreen} options={{ title: '发现' }} />
       <Tab.Screen name="Journey" component={JourneyScreen} options={{ title: '历程' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: '我的' }} />
     </Tab.Navigator>

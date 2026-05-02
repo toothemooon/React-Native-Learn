@@ -32,7 +32,6 @@ App.tsx
            ├──【Tab 层】BottomTabs
            │    ├── HomeScreen
            │    │    └── 点击 Hero 卡片 → navigate('PlayerModal') ──────────┐
-           │    ├── DiscoverScreen（占位）                                    │
            │    ├── JourneyScreen（占位）                                     │
            │    └── ProfileScreen                                             │
            │         ├── useState(settingsVisible)                            │
