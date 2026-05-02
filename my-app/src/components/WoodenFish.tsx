@@ -2,7 +2,11 @@ import React, { useState, useRef } from 'react';
 import { Pressable, StyleSheet, Animated, View } from 'react-native';
 import Svg, { Path, Defs, RadialGradient, Stop, Circle } from 'react-native-svg';
 
-export default function WoodenFish() {
+interface WoodenFishProps {
+  onStrike?: () => void;
+}
+
+export default function WoodenFish({ onStrike }: WoodenFishProps) {
   const [isPressed, setIsPressed] = useState(false);
   
   // 水波纹动画 (Ripple Animation)
@@ -11,6 +15,9 @@ export default function WoodenFish() {
 
   const handlePressIn = () => {
     setIsPressed(true);
+    if (onStrike) {
+      onStrike();
+    }
     
     // 重置并触发涟漪动画
     rippleScale.setValue(0);

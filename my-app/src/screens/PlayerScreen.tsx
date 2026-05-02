@@ -39,7 +39,7 @@ export default function PlayerScreen() {
         <View style={styles.mainContent}>
           <View style={[styles.circleRing, { width: 260, height: 260 }]} />
           <View style={[styles.circleRing, { width: 330, height: 330 }]} />
-          <WoodenFish />
+          <WoodenFish onStrike={() => setStrikes((prev) => prev + 1)} />
         </View>
 
         {/* 底部信息与按钮区 */}
