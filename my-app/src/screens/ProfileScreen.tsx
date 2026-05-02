@@ -32,7 +32,7 @@ export default function ProfileScreen() {
             accessibilityLabel="查看礼物"
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Ionicons name="gift-outline" size={24} color="#A09050" />
+            <Ionicons name="gift-outline" size={24} color="#D4FF59" />
           </Pressable>
         </View>
 
@@ -90,7 +90,7 @@ export default function ProfileScreen() {
               accessibilityRole="button"
               accessibilityLabel="分享我的连续记录"
             >
-              <Ionicons name="share-outline" size={18} color="#000" />
+              <Ionicons name="share-outline" size={16} color="#D4FF59" />
               <Text style={styles.shareBtnText}>分享我的连续记录</Text>
             </Pressable>
           </View>
