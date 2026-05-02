@@ -53,7 +53,6 @@ export default function WoodenFish({ onStrike }: WoodenFishProps) {
       
       {/* 木鱼交互层 */}
       <Pressable
-        testID="wooden-fish-pressable"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         accessibilityRole="button"
