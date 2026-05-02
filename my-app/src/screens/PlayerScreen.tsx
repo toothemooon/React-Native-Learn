@@ -17,7 +17,13 @@ export default function PlayerScreen() {
         
         {/* 顶部栏：提供收起 (Minimize) 按钮 */}
         <View style={styles.header}>
-          <Pressable onPress={() => navigation.goBack()} style={styles.iconBtn}>
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={styles.iconBtn}
+            accessibilityRole="button"
+            accessibilityLabel="收起播放器"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Ionicons name="chevron-down" size={28} color="#A1A1A6" />
           </Pressable>
           <View style={styles.placeholder} />
@@ -55,7 +61,12 @@ export default function PlayerScreen() {
             </View>
           </View>
 
-          <Pressable style={styles.adjustBtn} onPress={() => setInstrumentPanelVisible(true)}>
+          <Pressable
+            style={styles.adjustBtn}
+            onPress={() => setInstrumentPanelVisible(true)}
+            accessibilityRole="button"
+            accessibilityLabel="打开法器设置面板"
+          >
             <Text style={styles.adjustBtnText}>— 调整法器 —</Text>
           </Pressable>
         </View>
