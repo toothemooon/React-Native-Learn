@@ -4,6 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AppSettings from '../components/AppSettings';
 
+const CALENDAR_DAYS = Array.from({ length: 30 });
+const WEEK_DAYS = ['一', '二', '三', '四', '五', '六', '日'];
+
 export default function ProfileScreen() {
   const [settingsVisible, setSettingsVisible] = useState(false);
 
@@ -65,14 +68,14 @@ export default function ProfileScreen() {
               <Ionicons name="chevron-forward" size={20} color="#888" />
             </View>
             <View style={styles.calGrid}>
-              {['一', '二', '三', '四', '五', '六', '日'].map(d => (
+              {WEEK_DAYS.map(d => (
                 <Text key={d} style={styles.calDayLabel}>{d}</Text>
               ))}
               {/* 填充空白 */}
               <View style={styles.calDayBox} />
               <View style={styles.calDayBox} />
               {/* 模拟当月天数 */}
-              {[...Array(30)].map((_, i) => {
+              {CALENDAR_DAYS.map((_, i) => {
                 const isToday = i === 29;
                 return (
                   <View key={i} style={[styles.calDayBox, isToday && styles.calDayActive]}>
