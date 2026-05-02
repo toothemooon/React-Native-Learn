@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import PlayerScreen from '../screens/PlayerScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import { MainTabsParamList, RootStackParamList } from './types';
 
 // 占位页
 function DiscoverScreen() {
@@ -16,8 +17,8 @@ function JourneyScreen() {
   return <View style={styles.placeholder}><Text style={styles.text}>功德 (Journey)</Text></View>;
 }
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator<MainTabsParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // 底层悬浮 4 向 Tab
 function BottomTabs() {
