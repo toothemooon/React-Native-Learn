@@ -23,8 +23,14 @@ export default function HomeScreen() {
 
           {/* Hero 卡片 (Daily Zen) */}
           <Pressable 
-            style={styles.heroCard}
+            style={({ pressed }) => [
+              styles.heroCard,
+              { opacity: pressed ? 0.8 : 1, transform: [{ scale: pressed ? 0.98 : 1 }] }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
+            accessibilityRole="button"
+            accessibilityLabel="开始今日禅修"
+            accessibilityHint="点击进入播放器界面"
           >
             <View style={styles.heroContent}>
               <Text style={styles.heroTag}>今日推荐 · Daily Zen</Text>
@@ -40,18 +46,39 @@ export default function HomeScreen() {
           {/* 最近使用 */}
           <Text style={styles.sectionTitle}>近期修行</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll}>
-            <View style={styles.recentCard}>
+            <Pressable
+              style={({ pressed }) => [
+                styles.recentCard,
+                { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] }
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="继续紫金钵修行"
+            >
               <Ionicons name="medical-outline" size={28} color="#A08090" />
               <Text style={styles.recentText}>紫金钵</Text>
-            </View>
-            <View style={styles.recentCard}>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.recentCard,
+                { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] }
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="继续白玉木鱼修行"
+            >
               <Ionicons name="leaf-outline" size={28} color="#C0D0C0" />
               <Text style={styles.recentText}>白玉木鱼</Text>
-            </View>
-            <View style={styles.recentCard}>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.recentCard,
+                { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] }
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="继续赛博赛博修行"
+            >
               <Ionicons name="moon-outline" size={28} color="#5090A0" />
               <Text style={styles.recentText}>赛博赛博</Text>
-            </View>
+            </Pressable>
           </ScrollView>
 
         </ScrollView>
