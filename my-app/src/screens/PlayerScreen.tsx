@@ -19,7 +19,7 @@ export default function PlayerScreen() {
         <View style={styles.header}>
           <Pressable
             onPress={() => navigation.goBack()}
-            style={styles.iconBtn}
+            style={({ pressed }) => [styles.iconBtn, pressed && { opacity: 0.7 }]}
             accessibilityRole="button"
             accessibilityLabel="收起播放器"
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -62,7 +62,7 @@ export default function PlayerScreen() {
           </View>
 
           <Pressable
-            style={styles.adjustBtn}
+            style={({ pressed }) => [styles.adjustBtn, pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }]}
             onPress={() => setInstrumentPanelVisible(true)}
             accessibilityRole="button"
             accessibilityLabel="打开法器设置面板"
