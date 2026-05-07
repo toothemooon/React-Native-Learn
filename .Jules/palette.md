@@ -1,3 +1,6 @@
 ## 2024-05-01 - Accessible Icon Buttons and Touch Targets
 **Learning:** In React Native, `Pressable` components that only contain icons (like back buttons, settings gears, etc.) are completely opaque to screen readers by default. Screen reader users will simply hear "button" (if lucky) or just nothing. Furthermore, small icons without a `hitSlop` present a physical accessibility challenge for users with motor impairments or fat-finger errors on mobile devices.
 **Action:** Always add `accessibilityRole="button"` and a descriptive `accessibilityLabel` to icon-only `Pressable` components. Always provide a generous `hitSlop` (e.g., `hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}`) to expand the touch target area without affecting the visual layout.
+## 2026-05-07 - Accessible Pressable Components
+**Learning:** In React Native, `Pressable` components that wrap large interactive cards (like the Hero Card) lack native visual feedback and screen reader accessibility by default.
+**Action:** Use the `style={({ pressed }) => [...]}` pattern to add scaling/opacity changes for visual tactile feedback, and always include `accessibilityRole="button"` with descriptive `accessibilityLabel` and `accessibilityHint` attributes.
