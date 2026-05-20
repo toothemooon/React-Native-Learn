@@ -23,8 +23,14 @@ export default function HomeScreen() {
 
           {/* Hero 卡片 (Daily Zen) */}
           <Pressable 
-            style={styles.heroCard}
+            style={({ pressed }) => [
+              styles.heroCard,
+              { opacity: pressed ? 0.9 : 1, transform: [{ scale: pressed ? 0.98 : 1 }] }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
+            accessibilityRole="button"
+            accessibilityLabel="今日推荐 · Daily Zen：檀木与夏雨"
+            accessibilityHint="点击开始沉浸"
           >
             <View style={styles.heroContent}>
               <Text style={styles.heroTag}>今日推荐 · Daily Zen</Text>
