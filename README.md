@@ -11,12 +11,12 @@
 ### 产品愿景与特色
 
 - 🌑 **Dark Zen 极致美学**：深空灰底色 (`#0B0D11`) 配合极细发光边框，引入战略强调色——霓虹薄荷绿 (`#D4FF59`)，以"幽灵发光态 (Ghost Glow)"按钮呈现，避免刺眼的同时保持高辨识度。
-- 🏛️ **平台化四向底部导航**：全局底部悬浮 Tab Bar（禅境 / 发现 / 历程 / 我的），实现类 Calm 的平台级内容生态入口。
+- 🏛️ **平台化三向底部导航**：全局底部悬浮 Tab Bar（禅境 / 境界 / 我的），实现类 Calm 的平台级内容生态入口。
 - 🎯 **全屏沉浸播放器 (Global Modal Player)**：木鱼敲击体验封装于全局最高层级 `presentation: 'modal'` 中，上拉进入沉浸，下滑收起，确保绝对纯粹的无干扰禅修空间。
 - 🎛️ **双引擎配置中心（双分离设计）**：
   - **法器调音台 (SettingsPanel)**：仅在沉浸态下由"调整法器"按钮呼出，采用 Bento Box 卡片布局，包含祈福铭牌、播放模式、频率调节、音色收藏室（Cover Flow 横向画廊）。
   - **系统设置 (AppSettings)**：迁移至"我的 (Profile)"页面，通过左上角齿轮唤出，包含震动、Apple Health、法律协议等系统级配置，确保"禅境"与冰冷的后台设置之间的物理与认知隔离。
-- 📊 **个人资料看板**：修行统计数据（总计 / 最长 / 目前连续天数）与模拟冥想日历，今日高亮采用发光绿圆点。
+- 📊 **身份与修行足迹**：身份卡片展示段位与统计（连续天数 / 累计时长），详尽的里程碑列表支持三态（已达成 / 进行中 / 远未开启）可视化进度追踪。
 
 ### 当前进度
 
@@ -39,6 +39,8 @@
 | 图标 | `@expo/vector-icons` (Ionicons) |
 | 状态 | 组件级 `useState`（Phase 3 将引入 Zustand） |
 | UI/动效 | `react-native-svg`, `Animated` (RN 原生) |
+| 滑块 | `@react-native-community/slider` |
+| 模糊效果 | `expo-blur` |
 
 ### 快速开始
 
@@ -65,15 +67,18 @@ my-app/
 │   └── COMPONENTS.md             # 组件 API 文档
 └── src/
     ├── navigation/
-    │   └── RootNavigator.tsx     # 全局路由：Bottom Tabs + Player Modal Stack
+    │   ├── RootNavigator.tsx     # 全局路由：Bottom Tabs + Player Modal Stack
+    │   └── types.ts              # 导航类型定义（CompositeNavigationProp）
     ├── screens/
     │   ├── HomeScreen.tsx        # 禅境首页：问候语 + Hero卡片 + 近期修行
+    │   ├── JourneyScreen.tsx     # 境界页：段位称号 + SVG 呼吸人像 + 核心统计
     │   ├── PlayerScreen.tsx      # 全屏沉浸播放器（核心木鱼 + 法器配置入口）
-    │   └── ProfileScreen.tsx     # 个人资料：修行统计 + 日历 + 系统设置入口
+    │   └── ProfileScreen.tsx     # 个人资料：身份卡片 + 修行足迹 + 系统设置入口
     └── components/
         ├── WoodenFish.tsx        # 核心木鱼交互组件 (SVG + Animated)
         ├── SettingsPanel.tsx     # 法器调音台 (Bento Box，仅沉浸态呼出)
-        └── AppSettings.tsx       # 全屏系统设置页 (Profile 内嵌，Modal 呼出)
+        ├── AppSettings.tsx       # 全屏系统设置页 (Profile 内嵌，Modal 呼出)
+        └── MilestoneList.tsx     # 修行足迹列表（三态进度条组件）
 ```
 
 ### 文档导航
