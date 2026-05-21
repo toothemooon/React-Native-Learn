@@ -35,9 +35,9 @@ function BottomTabs() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: '禅境' }} />
-      <Tab.Screen name="Journey" component={JourneyScreen} options={{ title: '境界' }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: '我的' }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ title: '境' }} />
+      <Tab.Screen name="Journey" component={JourneyScreen} options={{ title: '修' }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: '悟' }} />
     </Tab.Navigator>
   );
 }
