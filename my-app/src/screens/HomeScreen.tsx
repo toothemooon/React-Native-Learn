@@ -37,23 +37,6 @@ export default function HomeScreen() {
             </View>
           </Pressable>
 
-          {/* 最近使用 */}
-          <Text style={styles.sectionTitle}>近期修行</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll}>
-            <View style={styles.recentCard}>
-              <Ionicons name="medical-outline" size={28} color="#A08090" />
-              <Text style={styles.recentText}>紫金钵</Text>
-            </View>
-            <View style={styles.recentCard}>
-              <Ionicons name="leaf-outline" size={28} color="#C0D0C0" />
-              <Text style={styles.recentText}>白玉木鱼</Text>
-            </View>
-            <View style={styles.recentCard}>
-              <Ionicons name="moon-outline" size={28} color="#5090A0" />
-              <Text style={styles.recentText}>赛博赛博</Text>
-            </View>
-          </ScrollView>
-
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -140,32 +123,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  sectionTitle: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: '500',
-    marginTop: 40,
-    marginBottom: 16,
-    letterSpacing: 1,
-  },
-  hScroll: {
-    gap: 16,
-    paddingRight: 24,
-  },
-  recentCard: {
-    width: 130,
-    height: 130,
-    backgroundColor: '#15171A',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
-    padding: 16,
-    justifyContent: 'space-between',
-  },
-  recentText: {
-    color: '#E0E0E0',
-    fontSize: 16,
-    fontWeight: '500',
-    letterSpacing: 1,
-  }
 });

@@ -3,23 +3,10 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AppSettings from '../components/AppSettings';
-// import MilestoneList, { Milestone } from '../components/MilestoneList';
 
 // 从 JourneyScreen 相同的 mock 数据读取（Phase 3 接入 Zustand 后统一来源）
 const MOCK_RANK = '心无挂碍';
 const MOCK_CONSECUTIVE_DAYS = 21;
-const MOCK_TOTAL_MINUTES = 154;
-
-// const MOCK_MILESTONES: Milestone[] = [
-//   { id: '1', title: '首次禅修',     subtitle: '踏上修行之路',       status: 'unlocked' },
-//   { id: '2', title: '累计 30 分钟', subtitle: '初燃香火',           status: 'unlocked' },
-//   { id: '3', title: '连续 7 天',    subtitle: '七日定心',           status: 'in-progress',
-//     progress: { current: 4, total: 7, remaining: 3, unit: '天' } },
-//   { id: '4', title: '累计 1 小时',  subtitle: '点亮心灯',           status: 'in-progress',
-//     progress: { current: 154, total: 180, remaining: 26, unit: '分钟' } },
-//   { id: '5', title: '心无挂碍',     subtitle: '连续禅修 21 天达成', status: 'unlocked' },
-//   { id: '6', title: '累计 10 小时', subtitle: '入定之门',           status: 'distant' },
-// ];
 
 export default function ProfileScreen() {
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -63,9 +50,6 @@ export default function ProfileScreen() {
               </View>
             </View>
           </View>
-
-          {/* 修行足迹（迁入）—— 已隐去 */}
-          {/* <MilestoneList milestones={MOCK_MILESTONES} /> */}
 
           {/* App 设置入口 */}
           <View style={styles.menuSection}>

@@ -12,17 +12,16 @@
 
 - 🌑 **Dark Zen 极致美学**：深空灰底色 (`#0B0D11`) 配合极细发光边框，引入战略强调色——霓虹薄荷绿 (`#D4FF59`)，以"幽灵发光态 (Ghost Glow)"按钮呈现，避免刺眼的同时保持高辨识度。
 - 🏛️ **平台化三向底部导航**：全局底部悬浮 Tab Bar（禅境 / 境界 / 我的），实现类 Calm 的平台级内容生态入口。
-- 🎯 **全屏沉浸播放器 (Global Modal Player)**：木鱼敲击体验封装于全局最高层级 `presentation: 'modal'` 中，上拉进入沉浸，下滑收起，确保绝对纯粹的无干扰禅修空间。
-- 🎛️ **双引擎配置中心（双分离设计）**：
-  - **法器调音台 (SettingsPanel)**：仅在沉浸态下由"调整法器"按钮呼出，采用 Bento Box 卡片布局，包含祈福铭牌、播放模式、频率调节、音色收藏室（Cover Flow 横向画廊）。
-  - **系统设置 (AppSettings)**：迁移至"我的 (Profile)"页面，通过左上角齿轮唤出，包含震动、Apple Health、法律协议等系统级配置，确保"禅境"与冰冷的后台设置之间的物理与认知隔离。
-- 📊 **身份与修行足迹**：身份卡片展示段位与统计（连续天数 / 累计时长），详尽的里程碑列表支持三态（已达成 / 进行中 / 远未开启）可视化进度追踪。
+- 🎯 **同心圆沉浸播放器 (Global Modal Player)**：木鱼敲击体验封装于全局最高层级 `presentation: 'modal'` 中，上拉进入沉浸，下滑收起。关闭后 HomeScreen 柔和淡出，顺理成章引导至境界页。
+- 🤖 **AI 禅师寄语板 (Premium 核心高地)**：境界页新增 AI Zen Master 今日定制寄语（3-4 行极细灰度文字），非 Pro 用户以 `expo-blur` 玻璃拟态模糊锁定。核心付费价值展示页。
+- 👑 **Pro 身份与商业合规闭环**：我的页身份卡片下方置入 Zen Pro 会员状态卡（试用状态+恢复购买按钮），满足 App Store 硬性合规要求。隐去顶部 icon 与修行足迹（代码保留）。
+- ⚙️ **极简设置入口**：我的页保留 "App 设置" 入口卡片，点击滚动呼出系统设置 Modal（震动、Apple Health、法律协议）。
 
 ### 当前进度
 
 | 阶段 | 状态 | 说明 |
 |------|------|------|
-| **Phase 1：架构重组** | ✅ 已完成 | React Navigation、Bottom Tabs、Player Modal、双分离设置已全部落地 |
+| **Phase 1：架构重组** | ✅ 已完成 | React Navigation、Bottom Tabs、Player Modal、信息架构重组（三页闭环：身体层→精神层→身份层）已全部落地 |
 | **Phase 2：感官闭环** | 🟡 即将启动 | expo-av 音频引擎、expo-haptics 触觉、Skia 材质渲染 |
 | **Phase 3：生态构建** | ⏳ 待规划 | Zustand Persist、Apple Health、包浆养成系统 |
 | **Phase 4：商业化** | ⏳ 待规划 | 在线禅房、Zen Pro 订阅、限定内购 (Drop) |
@@ -70,15 +69,14 @@ my-app/
     │   ├── RootNavigator.tsx     # 全局路由：Bottom Tabs + Player Modal Stack
     │   └── types.ts              # 导航类型定义（CompositeNavigationProp）
     ├── screens/
-    │   ├── HomeScreen.tsx        # 禅境首页：问候语 + Hero卡片 + 近期修行
-    │   ├── JourneyScreen.tsx     # 境界页：段位称号 + SVG 呼吸人像 + 核心统计
-    │   ├── PlayerScreen.tsx      # 全屏沉浸播放器（核心木鱼 + 法器配置入口）
-    │   └── ProfileScreen.tsx     # 个人资料：身份卡片 + 修行足迹 + 系统设置入口
+    │   ├── HomeScreen.tsx        # 禅境首页：问候语 + 唯一 Hero 卡片（1.0 极简入口，砍去近期修行区）
+    │   ├── JourneyScreen.tsx     # 境界页：SVG 呼吸人像 + AI Zen Master 今日寄语 + 核心统计（Premium 核心页）
+    │   ├── PlayerScreen.tsx      # 全屏沉浸播放器（核心木鱼 + 计数，1.0 极简版）
+    │   └── ProfileScreen.tsx     # 个人资料：身份卡片 + Zen Pro 会员状态卡 + App 设置
     └── components/
         ├── WoodenFish.tsx        # 核心木鱼交互组件 (SVG + Animated)
         ├── SettingsPanel.tsx     # 法器调音台 (Bento Box，仅沉浸态呼出)
         ├── AppSettings.tsx       # 全屏系统设置页 (Profile 内嵌，Modal 呼出)
-        └── MilestoneList.tsx     # 修行足迹列表（三态进度条组件）
 ```
 
 ### 文档导航

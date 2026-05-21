@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -75,15 +75,4 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 8 },
   },
-  placeholder: {
-    flex: 1,
-    backgroundColor: '#0B0D11',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: '#555',
-    fontSize: 16,
-    letterSpacing: 2,
-  }
 });

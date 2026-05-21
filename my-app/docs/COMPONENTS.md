@@ -1,6 +1,6 @@
 # 组件手册：WoodenFish 项目架构教学文档
 
-> 最后更新：2026-05-02
+> 最后更新：2026-05-21
 >
 > 本文档不只是 API 字典，更是帮你建立"心智模型"的教学手册。每个章节都会解释**是什么**、**为什么这样设计**，以及**如何做选择**。
 
@@ -15,9 +15,9 @@
 | 类比 | 对应代码 | 说明 |
 |------|---------|------|
 | 整个电影院（建筑本身） | `RootNavigator` | 管理所有空间，决定什么时候打开哪个门 |
-| 禅境大厅（内容层） | `HomeScreen` | "今天修什么"，连接放映厅的内容货架入口 |
-| 境界冥想室（意境层） | `JourneyScreen` | "当下的心境"，静谧的段位与呼吸可视化 |
-| 服务台（身份层） | `ProfileScreen` | "我是谁"，包含修行足迹（成就）与个人设置 |
+| 禅境大厅（身体层） | `HomeScreen` | "开始敲击？"，极简入口，唯一 Hero 卡片 |
+| 境界冥想室（精神层） | `JourneyScreen` | "我当下的心境？"，AI 禅师寄语板（Premium 核心高地） |
+| 服务台（身份层） | `ProfileScreen` | "我是谁"——Pro 身份与合规安全网（会员状态卡 + App 设置） |
 | 放映厅 | `PlayerScreen`（Modal） | 一旦进入，外部世界消失，全身心沉浸 |
 | 放映厅里的调音室 | `SettingsPanel` | 只能在放映厅内使用，外面看不见 |
 | 电影院门口的服务台 | `AppSettings` | 跟看电影本身无关的行政事务（退票、投诉） |
@@ -34,18 +34,18 @@ App.tsx
            ├──【Tab 层】BottomTabs
            │    ├── HomeScreen
            │    │    └── 点击 Hero 卡片 → navigate('PlayerModal') ──────────┐
-           │    ├── JourneyScreen（意境层，纯视觉渲染如呼吸人像与段位）             │
-           │    └── ProfileScreen                                             │
-           │         ├── MilestoneList（修行足迹）                             │
-           │         ├── useState(settingsVisible)                            │
-           │         └── <AppSettings visible={settingsVisible} />            │
-           │                                                                  │
-           └──【Modal 层】PlayerScreen ◄─────────────────────────────────────┘
-                └── useState(panelVisible)
-                └── <SettingsPanel visible={panelVisible} />
+           │    ├── JourneyScreen（精神层：呼吸人像 + AI 寄语 + 统计）     │
+           │    └── ProfileScreen                                           │
+           │         ├── Zen Pro 会员状态卡（Phase 2 实现）                 │
+           │         ├── useState(settingsVisible)                          │
+           │         └── <AppSettings visible={settingsVisible} />          │
+           │                                                                 │
+           └──【Modal 层】PlayerScreen ◄────────────────────────────────────┘
+                └── WoodenFish（核心敲击 + STRIKES 计数）
+                └── SettingsPanel 已移除（待 Phase 2 重新接入）
 ```
 
-**一句话总结**：HomeScreen 用**导航**打开 PlayerScreen；ProfileScreen 用**状态**控制 AppSettings。这两种方式不同，是因为它们本质上是两种不同的东西——下面第 2 章会详细解释。
+> **当前状态**：Phase 1 极简骨架。HomeScreen 用导航打开 PlayerScreen；ProfileScreen 用状态控制 AppSettings。PlayerScreen 内已移除 SettingsPanel（组件代码保留在项目中，Phase 2 重新接入）。
 
 ---
 
@@ -256,7 +256,7 @@ App.tsx
 ### SettingsPanel
 
 **路径**：`src/components/SettingsPanel.tsx`
-**角色**：法器调音台，以半透明 Modal 覆盖播放器，仅在 `PlayerScreen` 内使用
+**角色**：法器调音台。**Phase 1 已从 PlayerScreen 移除引用**，代码保留，Phase 2 重新接入。
 
 | Props | 类型 | 说明 |
 |-------|------|------|
@@ -294,7 +294,7 @@ App.tsx
 
 | Screen | 路径 | 主要职责 |
 |--------|------|---------|
-| `HomeScreen` | `src/screens/HomeScreen.tsx` | **内容层**：禅境首页，Hero 卡片点击后 `navigate('PlayerModal')` |
-| `JourneyScreen` | `src/screens/JourneyScreen.tsx` | **意境层**：纯视觉境界呈现（呼吸人像动画、段位文字、全局统计） |
-| `ProfileScreen` | `src/screens/ProfileScreen.tsx` | **身份层**：身份卡片、详细修行足迹（`MilestoneList`）与 AppSettings 宿主。 |
-| `PlayerScreen` | `src/screens/PlayerScreen.tsx` | 全屏沉浸播放器，含 WoodenFish 和 SettingsPanel |
+| `HomeScreen` | `src/screens/HomeScreen.tsx` | **身体层**：1.0 极简入口。问候语 + 唯一 Hero 卡片（放大居中），砍去近期修行区。点击→PlayerModal 沉浸。关闭弹窗后淡出引导切至境界页。 |
+| `JourneyScreen` | `src/screens/JourneyScreen.tsx` | **精神层 / AI 禅师寄语板（Premium 核心高地）**：SVG 呼吸人像 + AI Zen Master 今日寄语（3-4 行，非 Pro 模糊锁定）+ 连续天数/累计统计大字。 |
+| `ProfileScreen` | `src/screens/ProfileScreen.tsx` | **身份层**：身份卡片 + Zen Pro 会员状态卡（Phase 2 实现）+ App 设置。隐去顶部 icon 与修行足迹。 |
+| `PlayerScreen` | `src/screens/PlayerScreen.tsx` | 全屏沉浸播放器。含 WoodenFish + STRIKES 计数。SettingsPanel 已移除（代码保留，Phase 2 重新接入）。 |
