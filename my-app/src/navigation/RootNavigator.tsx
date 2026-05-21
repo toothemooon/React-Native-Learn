@@ -27,10 +27,14 @@ function BottomTabs() {
         tabBarLabelStyle: { fontSize: 11, marginBottom: 8, fontWeight: '500' },
         tabBarIcon: ({ color, focused }) => {
           let iconName: React.ComponentProps<typeof Ionicons>['name'] = 'home-outline';
-          if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
-          else if (route.name === 'Journey') iconName = focused ? 'leaf' : 'leaf-outline';
-          else if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
-          
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Journey') {
+            iconName = focused ? 'ellipse' : 'ellipse-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline';
+          }
+
           return <Ionicons name={iconName} size={24} color={color} style={{ marginTop: 8 }} />;
         },
       })}
@@ -47,13 +51,13 @@ export default function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={BottomTabs} />
-      <Stack.Screen 
-        name="PlayerModal" 
-        component={PlayerScreen} 
-        options={{ 
+      <Stack.Screen
+        name="PlayerModal"
+        component={PlayerScreen}
+        options={{
           presentation: 'modal',
           animation: 'slide_from_bottom',
-        }} 
+        }}
       />
     </Stack.Navigator>
   );

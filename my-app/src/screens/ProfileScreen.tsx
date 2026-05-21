@@ -1,169 +1,306 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import AppSettings from '../components/AppSettings';
 
-// 从 JourneyScreen 相同的 mock 数据读取（Phase 3 接入 Zustand 后统一来源）
-const MOCK_RANK = '心无挂碍';
-const MOCK_CONSECUTIVE_DAYS = 21;
+// 禅师的一些智慧语录（用于自动回复）
+const ZEN_REPLIES = [
+  '分心是自然的。注意到自己分心的那一刻，本身就是觉察。',
+  '吸气，呼气。觉察身体的紧绷，然后轻轻释放它。',
+  '每一声木鱼都是当下，声起，声落，无需强求，无需计数。',
+  '烦恼即是菩提。在嘈杂的世界中，守住心中的这一方净土。',
+  '修行不在于坐禅多久，而在于每一个当下的专注与安详。',
+  '让思维像水中的波纹一样，自然升起，也自然散去。',
+];
+
+interface Message {
+  id: string;
+  sender: 'master' | 'user';
+  text: string;
+  subtext: string;
+}
 
 export default function ProfileScreen() {
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      sender: 'master',
+      text: '今晚敲了 3 次，比昨天更专注了。每一声都是当下，不必计数。',
+      subtext: '禅师 · 会话结束后',
+    },
+    {
+      id: '2',
+      sender: 'user',
+      text: '我有时候会分心……',
+      subtext: '你',
+    },
+    {
+      id: '3',
+      sender: 'master',
+      text: '分心是自然的。注意到自己分心的那一刻，本身就是觉察。下次分心时，不用责怪，轻轻回来就好。',
+      subtext: '禅师',
+    },
+  ]);
+  const [inputText, setInputText] = useState('');
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  const handleSend = () => {
+    if (!inputText.trim()) return;
+
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      sender: 'user',
+      text: inputText,
+      subtext: '你',
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInputText('');
+
+    // 滚动到底部
+    setTimeout(() => scrollViewRef.current?.scrollToEnd({ animated: true }), 100);
+
+    // 模拟禅师回复
+    setTimeout(() => {
+      const randomReply = ZEN_REPLIES[Math.floor(Math.random() * ZEN_REPLIES.length)];
+      const masterMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        sender: 'master',
+        text: randomReply,
+        subtext: '禅师',
+      };
+      setMessages((prev) => [...prev, masterMsg]);
+      setTimeout(() => scrollViewRef.current?.scrollToEnd({ animated: true }), 100);
+    }, 1000);
+  };
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-
-        {/* 顶部栏 */}
-        {/* 齿轮 icon & 礼物 icon 已隐去 */}
-        <View style={styles.header}>
-          <View style={styles.placeholderLeft} />
-          <Text style={styles.headerTitle}>我的</Text>
-          <View style={styles.placeholderRight} />
-        </View>
-
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          {/* 身份卡片（Identity Card） */}
-          <View style={styles.identityCard}>
-            {/* 头像占位 */}
+      <SafeAreaView style={styles.safeArea} edges={['top']}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        >
+          {/* 顶部栏（AI 禅师头像及状态） */}
+          <View style={styles.header}>
             <View style={styles.avatarRing}>
-              <Ionicons name="person-outline" size={36} color="rgba(255,255,255,0.35)" />
+              <Text style={styles.avatarEmoji}>🧘</Text>
             </View>
-
-            {/* 名称 + 段位简签 */}
-            <Text style={styles.userName}>修行者</Text>
-            <View style={styles.rankBadge}>
-              <Text style={styles.rankBadgeText}>{MOCK_RANK}</Text>
-            </View>
-
-            {/* 迷你统计双格 */}
-            <View style={styles.miniStatsRow}>
-              <View style={styles.miniStatItem}>
-                <Text style={styles.miniStatValue}>{MOCK_CONSECUTIVE_DAYS}</Text>
-                <Text style={styles.miniStatLabel}>连续天数</Text>
-              </View>
-              <View style={styles.miniStatDivider} />
-              <View style={styles.miniStatItem}>
-                <Text style={styles.miniStatValue}>2h 34m</Text>
-                <Text style={styles.miniStatLabel}>累计时长</Text>
-              </View>
+            <View style={styles.headerInfo}>
+              <Text style={styles.headerTitle}>AI 禅师</Text>
+              <Text style={styles.headerSubtitle}>随时倾听 · 当下即答</Text>
             </View>
           </View>
 
-          {/* App 设置入口 */}
-          <View style={styles.menuSection}>
-            <Pressable
-              style={styles.menuRow}
-              onPress={() => setSettingsVisible(true)}
-              accessibilityRole="button"
-              accessibilityLabel="App 设置"
+          {/* 聊天消息区 */}
+          <ScrollView
+            ref={scrollViewRef}
+            style={styles.chatArea}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.chatContent}
+            onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+          >
+            {messages.map((item) => {
+              const isMaster = item.sender === 'master';
+              return (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.messageRow,
+                    isMaster ? styles.messageRowMaster : styles.messageRowUser,
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.bubble,
+                      isMaster ? styles.bubbleMaster : styles.bubbleUser,
+                    ]}
+                  >
+                    <Text style={[styles.bubbleText, isMaster ? styles.textMaster : styles.textUser]}>
+                      {item.text}
+                    </Text>
+                  </View>
+                  <Text style={[styles.subtext, isMaster ? styles.subtextMaster : styles.subtextUser]}>
+                    {item.subtext}
+                  </Text>
+                </View>
+              );
+            })}
+          </ScrollView>
+
+          {/* 底部输入框 */}
+          <View style={styles.inputDock}>
+            <TextInput
+              style={styles.input}
+              value={inputText}
+              onChangeText={setInputText}
+              placeholder="问问禅师..."
+              placeholderTextColor="#555555"
+              selectionColor="#D4FF59"
+            />
+            <Pressable 
+              style={[
+                styles.sendBtn,
+                !inputText.trim() && { opacity: 0.5 }
+              ]} 
+              onPress={handleSend}
             >
-              <Ionicons name="settings-outline" size={20} color="#888" />
-              <Text style={styles.menuLabel}>App 设置</Text>
-              <Ionicons name="chevron-forward" size={18} color="#555" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="send" size={16} color="#D4FF59" />
             </Pressable>
           </View>
-        </ScrollView>
-      </SafeAreaView>
 
-      {/* 系统设置全屏 Modal */}
-      <AppSettings
-        visible={settingsVisible}
-        onClose={() => setSettingsVisible(false)}
-      />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0B0D11' },
-  safeArea:  { flex: 1 },
-  scrollContent: { paddingBottom: 120 },
-
-  // 顶部栏
+  container: {
+    flex: 1,
+    backgroundColor: '#0B0D11', // 深空暗夜蓝
+  },
+  safeArea: {
+    flex: 1,
+  },
+  keyboardView: {
+    flex: 1,
+  },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 10,
-    marginBottom: 32,
-  },
-  placeholderLeft: {
-    width: 44, height: 44,
-  },
-  placeholderRight: {
-    width: 44, height: 44,
-  },
-  iconBtn: {
-    width: 44, height: 44,
-    borderRadius: 22,
-    backgroundColor: '#15171A',
-    justifyContent: 'center', alignItems: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
-  },
-  headerTitle: { color: '#FFF', fontSize: 18, fontWeight: '500', letterSpacing: 1 },
-
-  // 身份卡片
-  identityCard: {
-    alignItems: 'center',
-    marginHorizontal: 24,
-    paddingVertical: 36,
-    backgroundColor: '#15171A',
-    borderRadius: 28,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
-    marginBottom: 24,
-    gap: 8,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
   },
   avatarRing: {
-    width: 88, height: 88,
-    borderRadius: 44,
-    backgroundColor: 'rgba(255,255,255,0.04)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    justifyContent: 'center', alignItems: 'center',
-    marginBottom: 8,
-  },
-  userName: { color: 'rgba(255,255,255,0.85)', fontSize: 20, fontWeight: '300', letterSpacing: 2 },
-  rankBadge: {
-    paddingHorizontal: 14, paddingVertical: 4,
-    backgroundColor: 'rgba(212,255,89,0.08)',
-    borderRadius: 99,
-    borderWidth: 1,
-    borderColor: 'rgba(212,255,89,0.2)',
-  },
-  rankBadgeText: { color: '#D4FF59', fontSize: 12, letterSpacing: 2, opacity: 0.85 },
-
-  // 迎你统计双格
-  miniStatsRow: {
-    flexDirection: 'row',
-    marginTop: 12,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.06)',
-    width: '80%',
-  },
-  miniStatItem: { flex: 1, alignItems: 'center', gap: 4 },
-  miniStatDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.06)', marginVertical: 2 },
-  miniStatValue: { color: 'rgba(255,255,255,0.75)', fontSize: 17, fontWeight: '300', letterSpacing: 0.5 },
-  miniStatLabel: { color: 'rgba(255,255,255,0.28)', fontSize: 11, letterSpacing: 1 },
-
-  // 菜单区
-  menuSection: {
-    marginHorizontal: 24,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#15171A',
-    borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
-    paddingHorizontal: 20,
-  },
-  menuRow: {
-    flexDirection: 'row',
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 18,
-    gap: 14,
+    marginRight: 14,
   },
-  menuLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 15, letterSpacing: 0.5 },
+  avatarEmoji: {
+    fontSize: 24,
+  },
+  headerInfo: {
+    flex: 1,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  headerSubtitle: {
+    color: '#888888',
+    fontSize: 12,
+    marginTop: 4,
+    letterSpacing: 0.5,
+  },
+  chatArea: {
+    flex: 1,
+  },
+  chatContent: {
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 140, // 确保底部输入栏和 TabBar 不会遮挡最后一句话
+    gap: 20,
+  },
+  messageRow: {
+    maxWidth: '82%',
+  },
+  messageRowMaster: {
+    alignSelf: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  messageRowUser: {
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  bubble: {
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  bubbleMaster: {
+    backgroundColor: '#15171A',
+    borderLeftWidth: 3,
+    borderLeftColor: '#D4FF59', // 禅师标志性的极细左绿条
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.03)',
+  },
+  bubbleUser: {
+    backgroundColor: '#1A1C1E',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.03)',
+  },
+  bubbleText: {
+    fontSize: 15,
+    lineHeight: 22,
+    letterSpacing: 0.5,
+  },
+  textMaster: {
+    color: '#E0E0E0',
+  },
+  textUser: {
+    color: '#D1D1D6',
+  },
+  subtext: {
+    fontSize: 11,
+    color: '#555555',
+    marginTop: 6,
+  },
+  subtextMaster: {
+    marginLeft: 4,
+  },
+  subtextUser: {
+    marginRight: 4,
+  },
+  inputDock: {
+    position: 'absolute',
+    bottom: 96, // 刚好浮在底部 Tab 导航之上
+    left: 20,
+    right: 20,
+    flexDirection: 'row',
+    gap: 10,
+    backgroundColor: '#0B0D11',
+    paddingVertical: 8,
+  },
+  input: {
+    flex: 1,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#15171A',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+    paddingHorizontal: 20,
+    color: '#FFFFFF',
+    fontSize: 15,
+  },
+  sendBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#15171A',
+    borderWidth: 1,
+    borderColor: 'rgba(212, 255, 89, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
