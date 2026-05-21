@@ -1,0 +1,4 @@
+
+## 2024-05-21 - Standardizing Pressable Text Buttons in React Native
+**Learning:** In React Native, `Pressable` text-only buttons (like "Done" or "Close" labels in headers/footers) often lack built-in visual feedback and clear touch boundaries. When wrapped tightly around text, they can be hard to tap and feel unresponsive, negatively impacting accessibility and the tactile feel of the app.
+**Action:** When implementing generic text buttons with `Pressable`, systematically apply the `style={({ pressed }) => [...]}` pattern to provide opacity and/or scale feedback. Additionally, provide a `hitSlop` (e.g., `hitSlop={10}`) to increase the touch target without altering the layout, and always include `accessibilityRole="button"`, `accessibilityLabel`, and `accessibilityHint` for screen reader users.
