@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ComponentProps } from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -26,7 +26,7 @@ function BottomTabs() {
         tabBarShowLabel: true,
         tabBarLabelStyle: { fontSize: 11, marginBottom: 8, fontWeight: '500' },
         tabBarIcon: ({ color, focused }) => {
-          let iconName: React.ComponentProps<typeof Ionicons>['name'] = 'home-outline';
+          let iconName: ComponentProps<typeof Ionicons>['name'] = 'home-outline';
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Journey') {
