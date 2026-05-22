@@ -39,7 +39,7 @@ export default function SettingsPanel({ visible, onClose }: Props) {
   const [selectedSound, setSelectedSound] = useState('檀木');
 
   // 频率假数据（Phase 1 纯 UI 阶段）
-  const [intervalVal, setIntervalVal] = useState('0.5');
+  const [intervalVal] = useState('0.5');
 
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
