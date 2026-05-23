@@ -147,13 +147,20 @@ export default function ProfileScreen() {
               placeholder="问问禅师..."
               placeholderTextColor="#555555"
               selectionColor="#D4FF59"
+              accessibilityLabel="消息输入框"
             />
             <Pressable 
-              style={[
+              style={({ pressed }) => [
                 styles.sendBtn,
-                !inputText.trim() && { opacity: 0.5 }
+                !inputText.trim() && { opacity: 0.5 },
+                pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }
               ]} 
               onPress={handleSend}
+              accessibilityRole="button"
+              accessibilityLabel="发送"
+              accessibilityState={{ disabled: !inputText.trim() }}
+              disabled={!inputText.trim()}
+              hitSlop={10}
             >
               <Ionicons name="send" size={16} color="#D4FF59" />
             </Pressable>
