@@ -96,8 +96,14 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            style={({ pressed }) => [
+              styles.ctaButton,
+              { transform: [{ scale: pressed ? 0.96 : 1 }], opacity: pressed ? 0.8 : 1 }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
+            accessibilityHint="点击开始您的冥想之旅"
           >
             <Text style={styles.ctaText}>开始禅修</Text>
           </Pressable>
