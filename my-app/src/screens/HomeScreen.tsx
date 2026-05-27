@@ -49,10 +49,14 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    accessibilityRole="button"
+                    accessibilityLabel={sound.id === 'more' ? '更多环境音' : `选择${sound.name}`}
+                    accessibilityState={{ selected: isSelected }}
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      sound.id === 'more' && styles.cardMore,
+                      { transform: [{ scale: pressed ? 0.96 : 1 }] }
                     ]}
                     onPress={() => {
                       if (sound.id !== 'more') {
@@ -81,7 +85,15 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`选择法器：${inst.name}`}
+                    accessibilityState={{ selected: isSelected }}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      { transform: [{ scale: pressed ? 0.96 : 1 }] }
+                    ]}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
@@ -96,7 +108,15 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
+            style={({ pressed }) => [
+              styles.ctaButton,
+              {
+                transform: [{ scale: pressed ? 0.96 : 1 }],
+                opacity: pressed ? 0.8 : 1,
+              }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
           >
             <Text style={styles.ctaText}>开始禅修</Text>
