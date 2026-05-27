@@ -1,0 +1,4 @@
+
+## 2024-05-27 - Enhance Pressable feedback and Accessibility in React Native lists
+**Learning:** Native `Pressable` components in React Native provide no default visual feedback on press, making lists of items (like the sound/instrument cards on HomeScreen) feel unresponsive. Furthermore, mapped functional buttons often lack baseline accessibility traits.
+**Action:** Always convert static styles arrays in `Pressable` to the `({ pressed }) => [...]` function pattern to introduce tactile scaling (e.g., `transform: [{ scale: pressed ? 0.96 : 1 }]`) and opacity changes. Accompany these interaction fixes with `accessibilityRole="button"`, contextual `accessibilityLabel`, and explicitly communicate selection via `accessibilityState={{ selected: boolean }}` to ensure a complete micro-UX enhancement.
