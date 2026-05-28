@@ -1,0 +1,3 @@
+## 2024-05-18 - [Add Explicit Accessibility and Tactile Feedback to Interactive Cards]
+**Learning:** React Native's `Pressable` component does not have built-in visual feedback or automatic accessibility semantic mapping for complex visual toggle states (like 'selected' cards). Relying on just `onPress` and color changes leaves screen readers unaware of the control's state, and users without immediate tactile confirmation.
+**Action:** Always map functional disabled/selected states to `accessibilityState={{ disabled: boolean, selected: boolean }}`, give interactive cards an `accessibilityRole="button"`, and provide tactile feedback using `style={({ pressed }) => [{ transform: [{ scale: pressed ? 0.96 : 1 }] }]}`.
