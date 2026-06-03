@@ -49,11 +49,15 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      sound.id === 'more' && styles.cardMore,
+                      pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
                     ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={sound.id === 'more' ? '显示更多环境音' : `选择${sound.name}`}
+                    accessibilityState={{ selected: isSelected }}
                     onPress={() => {
                       if (sound.id !== 'more') {
                         setSelectedSound(sound.id);
@@ -81,7 +85,15 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
+                    ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={`选择${inst.name}`}
+                    accessibilityState={{ selected: isSelected }}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
@@ -96,7 +108,13 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            style={({ pressed }) => [
+              styles.ctaButton,
+              pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
+            accessibilityHint="进入冥想播放器界面"
             onPress={() => navigation.navigate('PlayerModal')}
           >
             <Text style={styles.ctaText}>开始禅修</Text>
