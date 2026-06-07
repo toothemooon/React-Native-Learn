@@ -154,6 +154,11 @@ export default function ProfileScreen() {
                 !inputText.trim() && { opacity: 0.5 }
               ]} 
               onPress={handleSend}
+              accessibilityRole="button"
+              accessibilityLabel="发送消息"
+              accessibilityState={{ disabled: !inputText.trim() ? true : false }}
+              disabled={!inputText.trim() ? true : false}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Ionicons name="send" size={16} color="#D4FF59" />
             </Pressable>
