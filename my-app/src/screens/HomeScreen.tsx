@@ -49,6 +49,8 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
                     style={[
                       styles.card,
                       isSelected && styles.cardActive,
@@ -81,6 +83,8 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
                     style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
