@@ -149,11 +149,17 @@ export default function ProfileScreen() {
               selectionColor="#D4FF59"
             />
             <Pressable 
-              style={[
+              style={({ pressed }) => [
                 styles.sendBtn,
-                !inputText.trim() && { opacity: 0.5 }
+                !inputText.trim() && { opacity: 0.5 },
+                pressed && inputText.trim() ? { transform: [{ scale: 0.9 }], opacity: 0.8 } : null
               ]} 
               onPress={handleSend}
+              accessibilityRole="button"
+              accessibilityLabel="发送消息"
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              disabled={!inputText.trim()}
+              accessibilityState={{ disabled: !inputText.trim() }}
             >
               <Ionicons name="send" size={16} color="#D4FF59" />
             </Pressable>
