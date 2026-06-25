@@ -1,0 +1,3 @@
+## 2025-01-01 - [Tactile Feedback & Selection State for Custom Cards]
+**Learning:** React Native's `Pressable` lacks native visual feedback and accessible states by default. When building custom selectable card grids (like Ambient Sounds and Instruments), screen readers fail to announce which items are currently active, and sighted users lack feedback when tapping.
+**Action:** Always provide `accessibilityState={{ selected: boolean }}` and `accessibilityRole="button"` for toggleable grid items, and implement tactile feedback using `style={({ pressed }) => [...]}` with opacity and subtle scale transitions.
