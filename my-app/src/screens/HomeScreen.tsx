@@ -49,16 +49,20 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      sound.id === 'more' && styles.cardMore,
+                      pressed && { opacity: 0.7 }
                     ]}
                     onPress={() => {
                       if (sound.id !== 'more') {
                         setSelectedSound(sound.id);
                       }
                     }}
+                    accessibilityRole="button"
+                    accessibilityLabel={sound.name}
+                    accessibilityState={{ selected: isSelected }}
                   >
                     <Text style={[styles.cardIcon, isSelected && styles.cardIconActive]}>
                       {sound.icon}
@@ -81,8 +85,16 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      pressed && { opacity: 0.7 }
+                    ]}
                     onPress={() => setSelectedInstrument(inst.id)}
+                    accessibilityRole="button"
+                    accessibilityLabel={inst.name}
+                    accessibilityState={{ selected: isSelected }}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
                     <Text style={[styles.cardName, isSelected && styles.cardNameActive]}>
@@ -96,8 +108,13 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            style={({ pressed }) => [
+              styles.ctaButton,
+              pressed && { opacity: 0.7 }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
           >
             <Text style={styles.ctaText}>开始禅修</Text>
           </Pressable>
