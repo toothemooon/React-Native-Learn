@@ -49,11 +49,15 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      sound.id === 'more' && styles.cardMore,
+                      pressed && styles.cardPressed
                     ]}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={sound.id === 'more' ? '更多环境音' : `选择${sound.name}`}
                     onPress={() => {
                       if (sound.id !== 'more') {
                         setSelectedSound(sound.id);
@@ -81,7 +85,15 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      pressed && styles.cardPressed
+                    ]}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={`选择法器${inst.name}`}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
@@ -96,7 +108,12 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            style={({ pressed }) => [
+              styles.ctaButton,
+              pressed && styles.ctaPressed
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
             onPress={() => navigation.navigate('PlayerModal')}
           >
             <Text style={styles.ctaText}>开始禅修</Text>
@@ -199,6 +216,10 @@ const styles = StyleSheet.create({
     color: '#D4FF59',
     fontWeight: '500',
   },
+  cardPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.98 }],
+  },
   ctaButton: {
     height: 56,
     borderRadius: 28,
@@ -212,6 +233,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
+  },
+  ctaPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
   ctaText: {
     color: '#FFFFFF',
