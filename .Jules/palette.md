@@ -1,3 +1,6 @@
 ## 2024-05-01 - Accessible Icon Buttons and Touch Targets
 **Learning:** In React Native, `Pressable` components that only contain icons (like back buttons, settings gears, etc.) are completely opaque to screen readers by default. Screen reader users will simply hear "button" (if lucky) or just nothing. Furthermore, small icons without a `hitSlop` present a physical accessibility challenge for users with motor impairments or fat-finger errors on mobile devices.
 **Action:** Always add `accessibilityRole="button"` and a descriptive `accessibilityLabel` to icon-only `Pressable` components. Always provide a generous `hitSlop` (e.g., `hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}`) to expand the touch target area without affecting the visual layout.
+## 2025-02-14 - React Native Custom Card Accessibility State
+**Learning:** In React Native, custom UI elements with selectable states (like cards in a grid) aren't automatically recognized as selectable by screen readers when built with `Pressable`. Users relying on assistive technology won't know if a card is currently selected or not.
+**Action:** When implementing selectable cards, always explicitly set `accessibilityRole="button"` and `accessibilityState={{ selected: boolean }}` on the `Pressable` component so assistive technologies can properly announce the selection status.
