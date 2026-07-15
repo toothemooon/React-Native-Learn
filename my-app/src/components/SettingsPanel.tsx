@@ -158,11 +158,17 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                   return (
                     <Pressable
                       key={s.id}
-                      onPress={() => !s.locked && setSelectedSound(s.id)}
-                      style={[
+                      disabled={s.locked}
+                      onPress={() => setSelectedSound(s.id)}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: isSelected, disabled: s.locked }}
+                      accessibilityLabel={`选择${s.name}音色`}
+                      accessibilityHint={s.locked ? "该音色当前已锁定" : "点击以切换到此音色"}
+                      style={({ pressed }) => [
                         styles.galleryCard,
                         isSelected && styles.galleryCardActive,
-                        s.locked && { opacity: 0.4 }
+                        s.locked && { opacity: 0.4 },
+                        pressed && { opacity: 0.8, transform: [{ scale: 0.96 }] }
                       ]}
                     >
                       {/* 背景柔光渲染 */}
