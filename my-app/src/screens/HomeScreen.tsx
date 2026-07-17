@@ -59,6 +59,9 @@ export default function HomeScreen() {
                         setSelectedSound(sound.id);
                       }
                     }}
+                    accessibilityRole="button"
+                    accessibilityLabel={sound.name}
+                    accessibilityState={{ selected: isSelected }}
                   >
                     <Text style={[styles.cardIcon, isSelected && styles.cardIconActive]}>
                       {sound.icon}
@@ -83,6 +86,9 @@ export default function HomeScreen() {
                     key={inst.id}
                     style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
                     onPress={() => setSelectedInstrument(inst.id)}
+                    accessibilityRole="button"
+                    accessibilityLabel={inst.name}
+                    accessibilityState={{ selected: isSelected }}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
                     <Text style={[styles.cardName, isSelected && styles.cardNameActive]}>
@@ -98,6 +104,8 @@ export default function HomeScreen() {
           <Pressable 
             style={styles.ctaButton}
             onPress={() => navigation.navigate('PlayerModal')}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
           >
             <Text style={styles.ctaText}>开始禅修</Text>
           </Pressable>
