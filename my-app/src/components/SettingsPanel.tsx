@@ -128,6 +128,9 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                         key={mode}
                         style={[styles.targetBtn, isSelected && styles.targetBtnActive]}
                         onPress={() => setStopMode(mode)}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: isSelected }}
+                        accessibilityLabel={`禅修目标：${topLabels[idx]}${btmLabels[idx]}`}
                       >
                         <Text style={[styles.targetTextTop, isSelected && styles.targetTextActive]}>
                           {topLabels[idx]}
@@ -159,6 +162,10 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                     <Pressable
                       key={s.id}
                       onPress={() => !s.locked && setSelectedSound(s.id)}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: isSelected, disabled: s.locked }}
+                      accessibilityLabel={`音色：${s.name}`}
+                      accessibilityHint={s.locked ? "需要解锁" : "点击选择该音色"}
                       style={[
                         styles.galleryCard,
                         isSelected && styles.galleryCardActive,
