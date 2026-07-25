@@ -1,0 +1,3 @@
+## 2025-03-08 - Accessible and Tactile Pressables
+**Learning:** React Native's `Pressable` component does not offer native tactile feedback. Setting custom UI elements like cards or buttons without styling the pressed state leads to a flat and unresponsive feel. Moreover, when using custom elements as toggleable grids, explicit `accessibilityState={{ selected: boolean }}` must be set so assistive technologies announce selection properly.
+**Action:** When creating interactive UI components using `Pressable`, systematically implement visual feedback via the `style={({ pressed }) => [...]}` pattern. Always provide `accessibilityRole="button"`, an appropriate `accessibilityLabel`, and explicitly manage `accessibilityState` where applicable.
