@@ -1,0 +1,4 @@
+
+## 2025-07-29 - Tactile Feedback and Strict Accessibility in Toggleable UI Cards
+**Learning:** Native `Pressable` lacks automated visual feedback, leading to uncertainty when users tap list items or grid cards. Additionally, without explicit `accessibilityRole` and `accessibilityState`, toggleable cards (like our sound gallery cards) are announced incorrectly by screen readers, failing to communicate whether they are selected or disabled.
+**Action:** Always provide explicit tactile feedback for toggleable `Pressable` cards using the `style={({ pressed }) => [...]}` pattern (e.g., dimming opacity and slightly scaling down). Furthermore, ensure that functionally disabled or toggleable custom UI elements are explicitly annotated with `accessibilityRole="button"`, an `accessibilityLabel`, and `accessibilityState={{ selected: boolean, disabled: boolean }}` so assistive technologies can properly announce their status.
