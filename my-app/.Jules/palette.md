@@ -1,0 +1,4 @@
+
+## 2026-07-30 - React Native Pressable Accessibility & Disabled States
+**Learning:** When adding disabled states and tactile visual feedback to `Pressable` elements in React Native, the `disabled` prop intrinsically blocks user interactions, making manual condition checks inside `onPress` redundant. However, it's critical to explicitly define `accessibilityState={{ disabled: boolean }}` alongside `disabled={boolean}` to ensure screen readers appropriately interpret and announce the disabled state to users. Additionally, relying solely on CSS-like opacity for disabled visuals misses the tactile feedback interaction (like scaling down via `style={({ pressed }) => [...]} `) necessary for a complete micro-UX.
+**Action:** Use native `disabled` prop on `Pressable` and always bind it with `accessibilityState={{ disabled: boolean }}`, while using `style={({ pressed }) => [...]}` for physical interaction feedback in custom touchable cards.
