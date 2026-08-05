@@ -1,0 +1,3 @@
+## 2024-08-05 - Add tactile feedback and accessibility props to custom Pressable cards
+**Learning:** In React Native, `Pressable` lacks native visual feedback (unlike `TouchableHighlight`). Custom cards or buttons implemented with `Pressable` need manual tactile feedback via the `style={({ pressed }) => [...]}` pattern, typically using scale or opacity transforms. Additionally, custom elements acting as toggles or buttons must explicitly define `accessibilityRole="button"` and `accessibilityState={{ selected: boolean }}` for assistive technologies.
+**Action:** Always verify `Pressable` components have tactile feedback and explicit accessibility roles/states if they function as buttons or selectable cards, avoiding reliance on visual styling alone.
