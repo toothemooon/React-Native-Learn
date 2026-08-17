@@ -1,0 +1,4 @@
+
+## 2024-05-18 - Pressable Selection State Accessibility
+**Learning:** Native `Pressable` components in React Native used as selectable grid cards lack implicit announcement of their selection state. Providing conditional styling (e.g., `cardActive`) without corresponding accessibility roles and states degrades screen reader UX. Additionally, these custom elements need explicit tactile feedback since they lack the native ripple or highlight of system buttons.
+**Action:** When implementing custom cards or toggles with `Pressable`, always supply `accessibilityRole="button"`, use `accessibilityState={{ selected: boolean }}` to semantically link the visual state to assistive tech, and implement scale/opacity changes using the `style={({ pressed }) => [...]}` pattern for immediate visual feedback.
