@@ -46,19 +46,22 @@ export default function HomeScreen() {
             <View style={styles.grid}>
               {AMBIENT_SOUNDS.map((sound) => {
                 const isSelected = selectedSound === sound.id;
+                const isMore = sound.id === 'more';
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    disabled={isMore}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected, disabled: isMore }}
+                    accessibilityLabel={sound.name}
+                    accessibilityHint={isMore ? "敬请期待" : `选择${sound.name}环境音`}
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      isMore && styles.cardMore,
+                      { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] }
                     ]}
-                    onPress={() => {
-                      if (sound.id !== 'more') {
-                        setSelectedSound(sound.id);
-                      }
-                    }}
+                    onPress={() => setSelectedSound(sound.id)}
                   >
                     <Text style={[styles.cardIcon, isSelected && styles.cardIconActive]}>
                       {sound.icon}
@@ -81,7 +84,16 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={inst.name}
+                    accessibilityHint={`选择${inst.name}法器`}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] }
+                    ]}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
