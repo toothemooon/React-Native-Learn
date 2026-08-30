@@ -49,16 +49,21 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      sound.id === 'more' && styles.cardMore,
+                      { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] }
                     ]}
                     onPress={() => {
                       if (sound.id !== 'more') {
                         setSelectedSound(sound.id);
                       }
                     }}
+                    accessibilityRole="button"
+                    accessibilityLabel={sound.id === 'more' ? "更多环境音" : `选择环境音：${sound.name}`}
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityHint={sound.id === 'more' ? "点击查看更多环境音选项" : "双击选择此环境音"}
                   >
                     <Text style={[styles.cardIcon, isSelected && styles.cardIconActive]}>
                       {sound.icon}
@@ -81,8 +86,17 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] }
+                    ]}
                     onPress={() => setSelectedInstrument(inst.id)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`选择法器：${inst.name}`}
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityHint="双击选择此法器"
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
                     <Text style={[styles.cardName, isSelected && styles.cardNameActive]}>
@@ -96,8 +110,14 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            style={({ pressed }) => [
+              styles.ctaButton,
+              { opacity: pressed ? 0.8 : 1, transform: [{ scale: pressed ? 0.98 : 1 }] }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
+            accessibilityHint="点击进入禅修播放界面"
           >
             <Text style={styles.ctaText}>开始禅修</Text>
           </Pressable>
