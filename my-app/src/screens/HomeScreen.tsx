@@ -49,11 +49,17 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
-                      styles.card,
-                      isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                    style={({ pressed }) => [
+                      [
+                        styles.card,
+                        isSelected && styles.cardActive,
+                        sound.id === 'more' && styles.cardMore
+                      ],
+                      { opacity: pressed ? 0.8 : 1, transform: [{ scale: pressed ? 0.98 : 1 }] }
                     ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={sound.name}
+                    accessibilityState={{ selected: isSelected }}
                     onPress={() => {
                       if (sound.id !== 'more') {
                         setSelectedSound(sound.id);
@@ -81,7 +87,13 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    style={({ pressed }) => [
+                      [styles.card, styles.cardInstrument, isSelected && styles.cardActive],
+                      { opacity: pressed ? 0.8 : 1, transform: [{ scale: pressed ? 0.98 : 1 }] }
+                    ]}
+                    accessibilityRole="button"
+                    accessibilityLabel={inst.name}
+                    accessibilityState={{ selected: isSelected }}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
@@ -96,7 +108,12 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            style={({ pressed }) => [
+              styles.ctaButton,
+              { opacity: pressed ? 0.8 : 1, transform: [{ scale: pressed ? 0.98 : 1 }] }
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
             onPress={() => navigation.navigate('PlayerModal')}
           >
             <Text style={styles.ctaText}>开始禅修</Text>
