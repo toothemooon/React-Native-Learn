@@ -128,6 +128,9 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                         key={mode}
                         style={[styles.targetBtn, isSelected && styles.targetBtnActive]}
                         onPress={() => setStopMode(mode)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`目标模式: ${topLabels[idx]}`}
+                        accessibilityState={{ selected: isSelected }}
                       >
                         <Text style={[styles.targetTextTop, isSelected && styles.targetTextActive]}>
                           {topLabels[idx]}
@@ -164,6 +167,10 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                         isSelected && styles.galleryCardActive,
                         s.locked && { opacity: 0.4 }
                       ]}
+                      accessibilityRole="button"
+                      accessibilityLabel={`音色: ${s.name}`}
+                      accessibilityState={{ selected: isSelected, disabled: s.locked }}
+                      accessibilityHint={s.locked ? "该音色已锁定，请先解锁" : "点击选择该音色"}
                     >
                       {/* 背景柔光渲染 */}
                       <View style={[styles.galleryGlow, { backgroundColor: s.color }]} />
