@@ -46,16 +46,22 @@ export default function HomeScreen() {
             <View style={styles.grid}>
               {AMBIENT_SOUNDS.map((sound) => {
                 const isSelected = selectedSound === sound.id;
+                const isDisabled = sound.id === 'more';
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    accessibilityRole="button"
+                    accessibilityLabel={sound.name}
+                    accessibilityState={{ selected: isSelected, disabled: isDisabled }}
+                    disabled={isDisabled}
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      isDisabled && styles.cardMore,
+                      pressed && !isDisabled && { opacity: 0.8, transform: [{ scale: 0.98 }] }
                     ]}
                     onPress={() => {
-                      if (sound.id !== 'more') {
+                      if (!isDisabled) {
                         setSelectedSound(sound.id);
                       }
                     }}
@@ -81,7 +87,15 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    accessibilityRole="button"
+                    accessibilityLabel={inst.name}
+                    accessibilityState={{ selected: isSelected }}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
+                    ]}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
@@ -96,7 +110,13 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            accessibilityRole="button"
+            accessibilityLabel="开始禅修"
+            accessibilityHint="打开禅修播放器"
+            style={({ pressed }) => [
+              styles.ctaButton,
+              pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
           >
             <Text style={styles.ctaText}>开始禅修</Text>
