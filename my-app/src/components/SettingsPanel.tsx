@@ -128,6 +128,9 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                         key={mode}
                         style={[styles.targetBtn, isSelected && styles.targetBtnActive]}
                         onPress={() => setStopMode(mode)}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: isSelected }}
+                        accessibilityLabel={`禅修目标: ${topLabels[idx]}`}
                       >
                         <Text style={[styles.targetTextTop, isSelected && styles.targetTextActive]}>
                           {topLabels[idx]}
@@ -164,6 +167,9 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                         isSelected && styles.galleryCardActive,
                         s.locked && { opacity: 0.4 }
                       ]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: isSelected, disabled: s.locked }}
+                      accessibilityLabel={`音色: ${s.name}${s.locked ? ' (已锁定)' : ''}`}
                     >
                       {/* 背景柔光渲染 */}
                       <View style={[styles.galleryGlow, { backgroundColor: s.color }]} />
