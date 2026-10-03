@@ -49,16 +49,20 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      sound.id === 'more' && styles.cardMore,
+                      pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
                     ]}
                     onPress={() => {
                       if (sound.id !== 'more') {
                         setSelectedSound(sound.id);
                       }
                     }}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={sound.id === 'more' ? '更多环境音' : `选择环境音: ${sound.name}`}
                   >
                     <Text style={[styles.cardIcon, isSelected && styles.cardIconActive]}>
                       {sound.icon}
@@ -81,8 +85,16 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
+                    ]}
                     onPress={() => setSelectedInstrument(inst.id)}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={`选择法器: ${inst.name}`}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
                     <Text style={[styles.cardName, isSelected && styles.cardNameActive]}>
