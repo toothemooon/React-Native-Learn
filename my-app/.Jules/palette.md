@@ -1,0 +1,3 @@
+## 2024-10-09 - React Native Pressable Tactile Feedback
+**Learning:** React Native's `Pressable` component doesn't inherently provide tactile feedback like a ripple or highlight (unlike web buttons or `TouchableHighlight`/`TouchableOpacity`). This lack of visual feedback makes interactive elements feel unresponsive or dead to the touch.
+**Action:** When implementing custom cards or buttons using `Pressable`, use the function form of the `style` prop `style={({ pressed }) => [...]}` to inject dynamic transform scaling (e.g., `scale: 0.96`) and opacity changes (e.g., `opacity: 0.9`) based on the `pressed` state to ensure the user receives immediate visual confirmation of their action. Additionally, always explicitly include `accessibilityRole="button"`.
