@@ -183,7 +183,19 @@ export default function SettingsPanel({ visible, onClose }: Props) {
 
             {/* 底部确认按钮 */}
             <View style={styles.footer}>
-              <Pressable style={styles.doneBtn} onPress={onClose}>
+              <Pressable
+                onPress={onClose}
+                accessibilityRole="button"
+                accessibilityLabel="收起面板"
+                accessibilityHint="保存当前法器配置并关闭"
+                style={({ pressed }) => [
+                  styles.doneBtn,
+                  {
+                    opacity: pressed ? 0.7 : 1,
+                    transform: [{ scale: pressed ? 0.98 : 1 }]
+                  }
+                ]}
+              >
                 <Text style={styles.doneBtnText}>✓ 收起面板</Text>
               </Pressable>
             </View>

@@ -18,7 +18,17 @@ export default function AppSettings({ visible, onClose }: Props) {
         <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>设置</Text>
-            <Pressable onPress={onClose} style={styles.closeBtn}>
+            <Pressable
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel="完成"
+              accessibilityHint="关闭设置页面"
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.closeBtn,
+                { opacity: pressed ? 0.6 : 1 }
+              ]}
+            >
               <Text style={styles.closeText}>完成</Text>
             </Pressable>
           </View>
