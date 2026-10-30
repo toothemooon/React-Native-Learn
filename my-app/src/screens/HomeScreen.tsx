@@ -49,10 +49,13 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={sound.id}
-                    style={[
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    style={({ pressed }) => [
                       styles.card,
                       isSelected && styles.cardActive,
-                      sound.id === 'more' && styles.cardMore
+                      sound.id === 'more' && styles.cardMore,
+                      pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
                     ]}
                     onPress={() => {
                       if (sound.id !== 'more') {
@@ -81,7 +84,14 @@ export default function HomeScreen() {
                 return (
                   <Pressable
                     key={inst.id}
-                    style={[styles.card, styles.cardInstrument, isSelected && styles.cardActive]}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                    style={({ pressed }) => [
+                      styles.card,
+                      styles.cardInstrument,
+                      isSelected && styles.cardActive,
+                      pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
+                    ]}
                     onPress={() => setSelectedInstrument(inst.id)}
                   >
                     <Text style={styles.cardIcon}>{inst.icon}</Text>
@@ -96,7 +106,11 @@ export default function HomeScreen() {
 
           {/* 开始禅修按钮 */}
           <Pressable 
-            style={styles.ctaButton}
+            accessibilityRole="button"
+            style={({ pressed }) => [
+              styles.ctaButton,
+              pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] }
+            ]}
             onPress={() => navigation.navigate('PlayerModal')}
           >
             <Text style={styles.ctaText}>开始禅修</Text>
