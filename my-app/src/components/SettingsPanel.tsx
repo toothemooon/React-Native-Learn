@@ -126,7 +126,14 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                     return (
                       <Pressable
                         key={mode}
-                        style={[styles.targetBtn, isSelected && styles.targetBtnActive]}
+                        accessibilityRole="button"
+                        accessibilityLabel={`目标模式：${topLabels[idx]}`}
+                        accessibilityState={{ selected: isSelected }}
+                        style={({ pressed }) => [
+                          styles.targetBtn,
+                          isSelected && styles.targetBtnActive,
+                          pressed && { opacity: 0.8, transform: [{ scale: 0.96 }] }
+                        ]}
                         onPress={() => setStopMode(mode)}
                       >
                         <Text style={[styles.targetTextTop, isSelected && styles.targetTextActive]}>
@@ -158,11 +165,16 @@ export default function SettingsPanel({ visible, onClose }: Props) {
                   return (
                     <Pressable
                       key={s.id}
+                      accessibilityRole="button"
+                      accessibilityLabel={`音色：${s.name}`}
+                      accessibilityHint={s.locked ? "未解锁，不可选择" : "双击选择该音色"}
+                      accessibilityState={{ selected: isSelected, disabled: s.locked }}
                       onPress={() => !s.locked && setSelectedSound(s.id)}
-                      style={[
+                      style={({ pressed }) => [
                         styles.galleryCard,
                         isSelected && styles.galleryCardActive,
-                        s.locked && { opacity: 0.4 }
+                        s.locked && { opacity: 0.4 },
+                        pressed && !s.locked && { transform: [{ scale: 0.96 }] }
                       ]}
                     >
                       {/* 背景柔光渲染 */}
